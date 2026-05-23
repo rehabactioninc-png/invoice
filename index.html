@@ -2,734 +2,617 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Rehab Action, Inc - Therapist Invoice</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rehab Action, Inc – Therapist Invoice</title>
 <style>
-  * { box-sizing: border-box; }
-  body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f7f7f7;
-    margin: 0;
-    padding: 24px;
-    color: #000;
-  }
-  .invoice {
-    background: #fff;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 28px 36px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
-  .top-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-  }
-  .company-box,
-  .invoice-box {
-    border: 1.5px solid #000;
-    padding: 6px 14px;
-    font-weight: bold;
-    font-size: 14px;
-  }
-  .header-row {
-    background: #efe9dc;
-    padding: 6px 8px;
-    display: flex;
-    align-items: center;
-    gap: 32px;
-    margin-bottom: 0;
-    border: 1px solid #000;
-    border-bottom: none;
-  }
-  .header-row label {
-    font-weight: bold;
-    font-size: 14px;
-  }
-  .header-row .field {
-    border-bottom: 1px solid transparent;
-    min-width: 220px;
-    display: inline-block;
-    padding: 2px 4px;
-  }
-  .header-row .name-wrap,
-  .header-row .email-wrap,
-  .header-row .week-wrap {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .header-row input[type="date"],
-  .header-row input[type="text"],
-  .header-row input[type="email"] {
-    font-family: inherit;
-    font-size: 14px;
-    padding: 4px 8px;
-    border: 1px solid #888;
-    background: #fff;
-  }
-  .header-row input[type="text"] {
-    min-width: 160px;
-  }
-  .header-row input[type="email"] {
-    min-width: 220px;
-  }
-  .header-row .week-range {
-    font-weight: normal;
-    font-size: 13px;
-    color: #333;
-    font-style: italic;
-  }
-  .header-row .week-warning {
-    color: #c00000;
-    font-size: 12px;
-    margin-left: 6px;
-  }
-  table.invoice-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-  }
-  table.invoice-table th,
-  table.invoice-table td {
-    border: 1px solid #000;
-    padding: 6px 6px;
-    height: 28px;
-    font-size: 13px;
-    vertical-align: middle;
-  }
-  table.invoice-table thead th {
-    text-align: left;
-    background: #fff;
-    font-weight: bold;
-    text-decoration: underline;
-  }
-  table.invoice-table th.day,
-  table.invoice-table td.day {
-    text-align: center;
-    width: 48px;
-  }
-  table.invoice-table th.notes,
-  table.invoice-table td.notes {
-    width: 22%;
-  }
-  table.invoice-table th.patient,
-  table.invoice-table td.patient {
-    width: 20%;
-  }
-  table.invoice-table th.company,
-  table.invoice-table td.company {
-    width: 14%;
-  }
-  table.invoice-table td .cell-input {
-    width: 100%;
-    border: 0;
-    outline: 0;
-    background: transparent;
-    font-family: inherit;
-    font-size: 13px;
-    color: inherit;
-    padding: 0;
-    margin: 0;
-  }
-  table.invoice-table td.day .cell-input {
-    text-align: center;
-  }
-  table.invoice-table td .cell-input:focus {
-    background: #fffbe6;
-  }
-  .red {
-    color: #c00000;
-    font-weight: bold;
-    font-size: 13px;
-  }
-  .legend {
-    margin-top: 14px;
-    font-size: 13px;
-  }
-  .legend .row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 28px;
-    margin-bottom: 4px;
-  }
-  .notes-block {
-    margin-top: 14px;
-    line-height: 1.5;
-  }
-  .submit-bar {
-    margin-top: 18px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    flex-wrap: wrap;
-  }
-  .submit-btn {
-    background: #2b6cb0;
-    color: #fff;
-    border: 0;
-    padding: 10px 22px;
-    font-size: 15px;
-    font-weight: bold;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .submit-btn:hover { background: #234e7c; }
-  .submit-btn:disabled { background: #888; cursor: not-allowed; }
-  .submit-status {
-    font-size: 14px;
-    padding: 6px 10px;
-    border-radius: 3px;
-  }
-  .submit-status.success { background: #e6f4ea; color: #1e7e34; }
-  .submit-status.error   { background: #fbe9e7; color: #b91c1c; }
-  .submit-status.info    { background: #e7f0fb; color: #1e3a8a; }
-  .draft-status {
-    font-size: 12px;
-    color: #555;
-    font-style: italic;
-  }
-  .clear-link {
-    background: none;
-    border: 0;
-    color: #555;
-    font-size: 12px;
-    text-decoration: underline;
-    cursor: pointer;
-    padding: 0;
-    margin-left: auto;
-  }
-  .clear-link:hover { color: #c00000; }
-  @media print {
-    body { background: #fff; padding: 0; }
-    .invoice { box-shadow: none; padding: 12px; }
-    .submit-bar { display: none; }
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:'Segoe UI',Arial,sans-serif;
+  font-size:14px;
+  background:#dde3ea;
+  color:#222;
+}
+
+.page{
+  max-width:1100px;
+  margin:20px auto;
+  background:#fff;
+  border-radius:10px;
+  box-shadow:0 4px 18px rgba(0,0,0,.18);
+  padding:28px 28px 32px;
+}
+
+/* ── Header ── */
+.hdr{text-align:center;border-bottom:3px solid #002855;padding-bottom:14px;margin-bottom:22px}
+.hdr h1{font-size:23px;color:#002855;letter-spacing:2px;font-weight:900;text-transform:uppercase}
+.hdr h2{font-size:15px;color:#666;font-weight:400;margin-top:5px;letter-spacing:1px}
+
+/* ── Info grid ── */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 40px;margin-bottom:22px}
+.info-row{display:flex;align-items:center;gap:10px}
+.info-row label{font-weight:700;font-size:13px;white-space:nowrap;min-width:190px;color:#333}
+.info-row input{
+  flex:1;border:1.5px solid #bbb;border-radius:4px;
+  padding:6px 10px;font-size:13px;font-family:inherit;
+}
+.info-row input:focus{outline:none;border-color:#002855;box-shadow:0 0 0 2px rgba(0,40,85,.12)}
+
+/* ── Table ── */
+.table-scroll{overflow-x:auto;margin-bottom:14px}
+
+table{
+  border-collapse:collapse;
+  table-layout:auto;   /* lets patient/agency cols expand with content */
+  white-space:nowrap;
+}
+
+th{
+  background:#002855;color:#fff;
+  font-size:11.5px;padding:7px 5px;
+  text-align:center;border:1px solid #001e40;
+  white-space:nowrap;
+}
+td{border:1px solid #ddd;padding:2px 3px;vertical-align:middle}
+tr:nth-child(even) td{background:#f5f8fb}
+tr:nth-child(odd)  td{background:#fff}
+
+/* Day columns — narrower to give room to Patient Name */
+.col-day{width:40px;max-width:40px;text-align:center}
+
+/* ── Row inputs ── */
+.input-patient,.input-agency{
+  border:none;padding:4px 5px;font-size:13px;
+  font-family:inherit;background:transparent;outline:none;
+  /* width is set dynamically by autoResize(); these are starting minimums */
+}
+.input-patient{width:150px}
+.input-agency {width:100px}
+
+.input-day{
+  border:none;width:34px;padding:3px 2px;
+  font-size:12px;text-align:center;
+  background:transparent;outline:none;
+  text-transform:uppercase;
+}
+
+.input-notes{
+  border:none;min-width:120px;width:100%;
+  padding:4px 5px;font-size:12px;
+  background:transparent;outline:none;font-family:inherit;
+}
+
+input:focus{background:#fffde7 !important}
+
+/* Agency required highlight */
+.agency-error{background:#ffe0e0 !important;outline:1.5px solid #cc0000 !important;border-radius:2px}
+th .req{color:#ffd54f;margin-left:2px;font-size:13px}
+
+/* ── Totals section ── */
+.totals-section{
+  background:#f0f4f8;border-radius:7px;
+  padding:14px 16px;margin-bottom:16px;
+}
+.totals-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px}
+.total-item{
+  background:#fff;border:1px solid #ccd6e0;border-radius:5px;
+  padding:7px 14px;text-align:center;min-width:64px;
+}
+.total-item.t-main{background:#002855;color:#fff;border-color:#002855}
+.total-item.t-mv  {background:#fff3cd;border-color:#e0a800}
+.total-label{display:block;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+.total-val  {display:block;font-size:22px;font-weight:700;line-height:1.2}
+.t-main .total-label,.t-main .total-val{color:#fff}
+.t-mv .total-label,.t-mv .total-val{color:#7a5c00}
+.t-mv-note{font-size:9px;display:block;color:#a07000;margin-top:1px}
+
+.agency-breakdown{margin-top:12px;border-top:1px solid #d0d8e0;padding-top:10px}
+.agency-breakdown h3{
+  font-size:11px;text-transform:uppercase;
+  letter-spacing:.5px;color:#002855;margin-bottom:8px;font-weight:700
+}
+.agency-blocks{display:flex;flex-wrap:wrap;gap:8px}
+.agency-block{
+  background:#fff;border:1px solid #ccd6e0;
+  border-radius:5px;padding:8px 13px;
+}
+.agency-name{font-weight:700;font-size:12px;color:#002855;margin-bottom:4px}
+.agency-counts{display:flex;flex-wrap:wrap;gap:7px;font-size:12px;color:#444}
+.agency-total{font-weight:700;color:#002855}
+.code-mv{color:#7a5c00}
+
+/* ── Legend ── */
+.legend{
+  background:#fffde7;border:1px solid #ffe082;
+  border-radius:5px;padding:10px 14px;
+  font-size:12px;line-height:2.2;margin-bottom:14px;color:#555;
+}
+.legend span{margin-right:16px;white-space:nowrap}
+.legend .lnote{color:#a07000;font-style:italic}
+
+/* ── Reminder ── */
+.reminder{
+  font-size:12px;color:#555;
+  border-left:3px solid #002855;
+  padding:8px 14px;margin-bottom:20px;line-height:1.7;
+}
+
+/* ── Buttons ── */
+.btn-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.btn-submit{
+  background:#002855;color:#fff;border:none;
+  padding:11px 30px;font-size:15px;font-weight:700;
+  border-radius:5px;cursor:pointer;letter-spacing:.3px;
+  font-family:inherit;
+}
+.btn-submit:hover:not(:disabled){background:#00336e}
+.btn-submit:disabled{background:#999;cursor:not-allowed}
+.btn-clear{
+  background:transparent;border:1.5px solid #bbb;
+  color:#666;padding:10px 18px;font-size:13px;
+  border-radius:5px;cursor:pointer;font-family:inherit;
+}
+.btn-clear:hover{background:#f0f0f0}
+
+@media(max-width:640px){
+  .info-grid{grid-template-columns:1fr}
+  .page{margin:8px;padding:14px 12px 20px}
+}
 </style>
 </head>
 <body>
-  <div class="invoice">
-    <div class="top-row">
-      <div class="company-box">REHAB ACTION, INC</div>
-      <div class="invoice-box">Invoice</div>
-    </div>
+<div class="page">
 
-    <div class="header-row">
-      <div class="name-wrap">
-        <label for="first-name">Therapist First Name:</label>
-        <input type="text" id="first-name" autocomplete="given-name" />
-        <label for="last-name">Last Name:</label>
-        <input type="text" id="last-name" autocomplete="family-name" />
-      </div>
-      <div class="email-wrap">
-        <label for="therapist-email">Your Email:</label>
-        <input type="email" id="therapist-email" autocomplete="email"
-               placeholder="you@example.com" />
-      </div>
-      <div class="week-wrap">
-        <label for="week-ending">Week ending (Saturday):</label>
-        <input type="date" id="week-ending" />
-        <span class="week-range" id="week-range"></span>
-        <span class="week-warning" id="week-warning" hidden>Snapped to the previous Saturday.</span>
-      </div>
-    </div>
-
-    <table class="invoice-table">
-      <thead>
-        <tr>
-          <th class="patient">Patient Name</th>
-          <th class="company">Company</th>
-          <th class="day">SUN</th>
-          <th class="day">M</th>
-          <th class="day">T</th>
-          <th class="day">W</th>
-          <th class="day">Th</th>
-          <th class="day">F</th>
-          <th class="day">SAT</th>
-          <th class="notes">NOTES</th>
-        </tr>
-      </thead>
-      <tbody id="invoice-rows">
-        <!-- rows are inserted via script -->
-      </tbody>
-    </table>
-
-    <div class="notes-block">
-      <div class="red">Invoices must be emailed by 9am every Monday to kari@rehabaction.com</div>
-      <div class="red">REMEMBER: Check your home page for pending or needs corrections visits. Only completed approved visits will be paid.</div>
-    </div>
-
-    <div class="legend">
-      <div class="row">
-        <span>TX = TREATMENT</span>
-        <span>MV = MISSED VISIT</span>
-        <span>E = EVAL</span>
-        <span>RA = REASSESMENT</span>
-        <span>DC = DISCHARGE</span>
-      </div>
-      <div class="row">
-        <span>SOC = START OF CARE OASIS</span>
-        <span>RC = RECERT OAISIS</span>
-        <span>ROC = RESUMPTION OF CARE OASIS</span>
-      </div>
-    </div>
-
-    <div class="submit-bar">
-      <button type="button" class="submit-btn" id="submit-btn">Submit Invoice</button>
-      <span class="submit-status" id="submit-status" hidden></span>
-      <span class="draft-status" id="draft-status" hidden></span>
-      <button type="button" class="clear-link" id="clear-suggestions"
-              title="Forget all saved patient names on this browser">
-        Clear saved patient names
-      </button>
-    </div>
-
-    <!-- Patient-name suggestions, populated from localStorage. -->
-    <datalist id="patient-names"></datalist>
+  <!-- Header -->
+  <div class="hdr">
+    <h1>REHAB ACTION, INC</h1>
+    <h2>Invoice</h2>
   </div>
 
+  <!-- Therapist Info -->
+  <div class="info-grid">
+    <div class="info-row">
+      <label>Therapist First Name:</label>
+      <input type="text" id="firstName" autocomplete="given-name">
+    </div>
+    <div class="info-row">
+      <label>Last Name:</label>
+      <input type="text" id="lastName" autocomplete="family-name">
+    </div>
+    <div class="info-row">
+      <label>Your Email:</label>
+      <input type="email" id="email" autocomplete="email">
+    </div>
+    <div class="info-row">
+      <label>Week ending (Saturday):</label>
+      <input type="date" id="weekEnding">
+    </div>
+  </div>
+
+  <!-- Patient Table -->
+  <div class="table-scroll">
+    <table id="invoiceTable">
+      <thead>
+        <tr>
+          <th>Patient Name</th>
+          <th>Agency <span class="req">*</span></th>
+          <th class="col-day">SUN</th>
+          <th class="col-day">M</th>
+          <th class="col-day">T</th>
+          <th class="col-day">W</th>
+          <th class="col-day">Th</th>
+          <th class="col-day">F</th>
+          <th class="col-day">SAT</th>
+          <th>NOTES</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Totals -->
+  <div class="totals-section" id="totalsSection">
+    <div class="totals-grid">
+      <div class="total-item t-main">
+        <span class="total-label">TOTAL VISITS</span>
+        <span class="total-val">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <span>TX = TREATMENT</span>
+    <span>MV = MISSED VISIT <span class="lnote">(not counted in total)</span></span>
+    <span>E = EVAL</span>
+    <span>RA = REASSESSMENT</span>
+    <span>DC = DISCHARGE</span>
+    <span>NV = NON-VISIT OASIS DISCHARGE</span><br>
+    <span>SOC = START OF CARE OASIS</span>
+    <span>RC = RECERTIFICATION OASIS</span>
+    <span>ROC = RESUMPTION OF CARE OASIS</span>
+  </div>
+
+  <!-- Reminder -->
+  <div class="reminder">
+    Invoices must be emailed by 9am every Monday to kari@rehabaction.com<br>
+    <strong>REMEMBER:</strong> Check your home page for pending or needs corrections visits. Only completed approved visits will be paid.
+  </div>
+
+  <!-- Buttons -->
+  <div class="btn-row">
+    <button class="btn-submit" id="submitBtn" onclick="submitInvoice()">Submit Invoice</button>
+    <button class="btn-clear" onclick="clearSaved()">Clear saved patient names</button>
+  </div>
+
+</div>
+
 <script>
-  // ---- Week-ending date logic ----
-  // The work week runs Sunday through Saturday, so the Week field is the
-  // *Saturday* that ends the week. On load we default to the most recent
-  // past Saturday (or today, if today is Saturday). The user can pick a
-  // different date, but any non-Saturday choice snaps back to the Saturday
-  // before it — useful when a therapist is submitting a late invoice for
-  // a previous work week.
+// ── Constants ────────────────────────────────────────────────────────────────
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby0Z8bNs6rs9YkqgVZSbyKjJnBDm8sChAUidBMzdTeNKarPPbEhWj6Zr_XF2fSlslEL/exec';
+const NUM_ROWS = 20;
+const DAYS = ['SUN','M','T','W','Th','F','SAT'];
 
-  const weekInput = document.getElementById('week-ending');
-  const weekRange = document.getElementById('week-range');
-  const weekWarn  = document.getElementById('week-warning');
+// PAYABLE_CODES: counted in total visits.  MV deliberately excluded.
+// NV (Non-Visit Oasis Discharge) IS counted — therapists get paid a reduced rate.
+const PAYABLE_CODES = ['TX','E','RA','DC','NV','SOC','ROC','RC'];
+const ALL_KNOWN     = [...PAYABLE_CODES, 'MV'];
 
-  function toISODate(d) {
-    // YYYY-MM-DD in local time (avoids UTC off-by-one from toISOString)
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  }
+const DRAFT_KEY = 'raiDraft_v3';
+const INFO_KEY  = 'raiTherapistInfo';
 
-  function parseISODate(str) {
-    const [y, m, d] = str.split('-').map(Number);
-    return new Date(y, m - 1, d);
-  }
+// ── Init ─────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  buildTable();
+  setDefaultWeek();
+  loadDraft();
+  ['firstName','lastName','email','weekEnding'].forEach(id =>
+    document.getElementById(id).addEventListener('input', saveDraft)
+  );
+});
 
-  function mostRecentSaturday(from = new Date()) {
-    // Sunday=0 ... Saturday=6. Subtract days to land on the most recent Saturday.
-    const d = new Date(from.getFullYear(), from.getMonth(), from.getDate());
-    const offset = (d.getDay() + 1) % 7; // Sat=0, Sun=1, Mon=2, ... Fri=6
-    d.setDate(d.getDate() - offset);
-    return d;
-  }
-
-  function snapToSaturday(d) {
-    // If already Saturday, keep it; otherwise back up to the prior Saturday.
-    if (d.getDay() === 6) return d;
-    return mostRecentSaturday(d);
-  }
-
-  function formatNice(d) {
-    // "May 2, 2026" — month first, then day, then year. No weekday prefix.
-    return d.toLocaleDateString(undefined, {
-      month: 'short', day: 'numeric', year: 'numeric'
-    });
-  }
-
-  function updateWeekRange() {
-    if (!weekInput.value) { weekRange.textContent = ''; return; }
-    const sat = parseISODate(weekInput.value);
-    const sun = new Date(sat);
-    sun.setDate(sun.getDate() - 6);
-    weekRange.textContent = `(${formatNice(sun)} – ${formatNice(sat)})`;
-  }
-
-  function setWeek(date, opts = { warn: false }) {
-    weekInput.value = toISODate(date);
-    updateWeekRange();
-    weekWarn.hidden = !opts.warn;
-  }
-
-  // Initial default: most recent past Saturday (or today if Saturday).
-  setWeek(mostRecentSaturday());
-
-  weekInput.addEventListener('change', () => {
-    if (!weekInput.value) { weekRange.textContent = ''; weekWarn.hidden = true; return; }
-    const picked = parseISODate(weekInput.value);
-    if (picked.getDay() === 6) {
-      setWeek(picked, { warn: false });
-    } else {
-      // Snap to the Saturday before the chosen date and let the user know.
-      setWeek(snapToSaturday(picked), { warn: true });
-    }
-  });
-
-  // ---- Patient rows ----
-  // Mirror the original PDF, which numbers rows 1-14 then 16-19 (no 15).
-  const rowNumbers = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19];
-  const tbody = document.getElementById('invoice-rows');
-  const dayKeys = ['sun','mon','tue','wed','thu','fri','sat'];
-
-  function makeInput(field, opts = {}) {
-    const list = opts.list ? ` list="${opts.list}"` : '';
-    return `<input type="text" class="cell-input" data-field="${field}" autocomplete="off"${list} />`;
-  }
-
-  rowNumbers.forEach(n => {
+// ── Build table ───────────────────────────────────────────────────────────────
+function buildTable() {
+  const tbody = document.getElementById('tableBody');
+  for (let i = 0; i < NUM_ROWS; i++) {
     const tr = document.createElement('tr');
-    tr.dataset.rowNum = n;
-    tr.innerHTML = `
-      <td class="patient">${makeInput('patient', { list: 'patient-names' })}</td>
-      <td class="company">${makeInput('company')}</td>
-      <td class="day">${makeInput('sun')}</td>
-      <td class="day">${makeInput('mon')}</td>
-      <td class="day">${makeInput('tue')}</td>
-      <td class="day">${makeInput('wed')}</td>
-      <td class="day">${makeInput('thu')}</td>
-      <td class="day">${makeInput('fri')}</td>
-      <td class="day">${makeInput('sat')}</td>
-      <td class="notes">${makeInput('notes')}</td>
-    `;
+
+    // Patient Name cell
+    const tdP = document.createElement('td');
+    const inP = mkInp('input-patient','patient',i);
+    inP.addEventListener('input', () => { autoResize(inP,150); checkAgency(i); updateTotals(); saveDraft(); });
+    tdP.appendChild(inP); tr.appendChild(tdP);
+
+    // Agency cell  (* = required when patient is filled)
+    const tdA = document.createElement('td');
+    const inA = mkInp('input-agency','agency',i);
+    inA.addEventListener('input', () => { autoResize(inA,100); checkAgency(i); updateTotals(); saveDraft(); });
+    tdA.appendChild(inA); tr.appendChild(tdA);
+
+    // Day cells
+    DAYS.forEach(d => {
+      const tdD = document.createElement('td');
+      tdD.className = 'col-day';
+      const inD = mkInp('input-day', d, i);
+      inD.maxLength = 10;
+      inD.addEventListener('input', () => { inD.value = inD.value.toUpperCase(); updateTotals(); saveDraft(); });
+      tdD.appendChild(inD); tr.appendChild(tdD);
+    });
+
+    // Notes cell
+    const tdN = document.createElement('td');
+    const inN = mkInp('input-notes','notes',i);
+    inN.addEventListener('input', saveDraft);
+    tdN.appendChild(inN); tr.appendChild(tdN);
+
     tbody.appendChild(tr);
-  });
-
-  // ---- Patient-name autocomplete ----
-  // Names persist in localStorage so the suggestions follow the therapist
-  // across weeks (per-browser, per-device). We save each name when the
-  // patient cell loses focus, and rebuild the <datalist> options each time
-  // the saved list changes so suggestions appear right away.
-  const PATIENT_KEY = 'rehabaction.patientNames.v1';
-
-  function loadPatientNames() {
-    try { return JSON.parse(localStorage.getItem(PATIENT_KEY) || '[]'); }
-    catch (e) { return []; }
   }
+}
 
-  function savePatientName(name) {
-    const trimmed = (name || '').trim();
-    if (!trimmed) return;
-    const list = loadPatientNames();
-    // Case-insensitive de-dup; preserve the casing of the first entry.
-    const existsAlready = list.some(n => n.toLowerCase() === trimmed.toLowerCase());
-    if (existsAlready) return;
-    list.push(trimmed);
-    list.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
-    try { localStorage.setItem(PATIENT_KEY, JSON.stringify(list)); }
-    catch (e) { /* private browsing / storage disabled — silently skip */ }
-    rebuildPatientDatalist();
-  }
+function mkInp(cls, field, row) {
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.className = cls;
+  inp.dataset.f = field;
+  inp.dataset.r = row;
+  inp.autocomplete = 'off';
+  return inp;
+}
 
-  function rebuildPatientDatalist() {
-    const dl = document.getElementById('patient-names');
-    if (!dl) return;
-    dl.innerHTML = '';
-    loadPatientNames().forEach(name => {
-      const opt = document.createElement('option');
-      opt.value = name;
-      dl.appendChild(opt);
-    });
-  }
+// ── Auto-resize text input to fit its content ─────────────────────────────────
+// Collapses to 1px first so scrollWidth reflects actual content, then expands.
+function autoResize(inp, minW) {
+  inp.style.width = '1px';
+  inp.style.width = Math.max(inp.scrollWidth + 4, minW) + 'px';
+}
 
-  rebuildPatientDatalist();
+// ── Mark agency cell red when patient is filled but agency is empty ───────────
+function checkAgency(row) {
+  const aInp = q('agency', row);
+  if (!aInp) return;
+  aInp.classList.toggle('agency-error', !!g('patient', row) && !g('agency', row));
+}
 
-  document.querySelectorAll('input[data-field="patient"]').forEach(input => {
-    input.addEventListener('blur', () => savePatientName(input.value));
-  });
+// ── Default week ending to most recent Saturday ───────────────────────────────
+function setDefaultWeek() {
+  const today = new Date();
+  const day = today.getDay(); // 0=Sun … 6=Sat
+  const daysBack = day === 6 ? 0 : day + 1;
+  const sat = new Date(today);
+  sat.setDate(today.getDate() - daysBack);
+  document.getElementById('weekEnding').value = sat.toISOString().split('T')[0];
+}
 
-  document.getElementById('clear-suggestions').addEventListener('click', () => {
-    const count = loadPatientNames().length;
-    if (count === 0) {
-      showStatus('No saved patient names to clear.', 'info');
-      return;
-    }
-    const ok = confirm(
-      `Clear ${count} saved patient name${count === 1 ? '' : 's'} from this browser? ` +
-      `This only affects autocomplete suggestions — invoices already submitted are not changed.`
-    );
-    if (!ok) return;
-    try { localStorage.removeItem(PATIENT_KEY); } catch (e) { /* ignore */ }
-    rebuildPatientDatalist();
-    showStatus(`Cleared ${count} saved patient name${count === 1 ? '' : 's'}.`, 'success');
-  });
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function q(field, row) {
+  return document.querySelector(`input[data-f="${field}"][data-r="${row}"]`);
+}
+function g(field, row) {
+  return (q(field, row)?.value || '').trim();
+}
+function parseCodes(str) {
+  if (!str) return [];
+  return str.toUpperCase().split(/[\s,/|+]+/).filter(Boolean);
+}
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
 
-  // ---- Submit handler ----
-  // The HTML form POSTs JSON to a Google Apps Script Web App. The script
-  // generates a properly-named PDF (e.g. "Borgner 5.2.26"), drops it in
-  // the Drive folder, appends a row to the linked Sheet, and emails Kari.
-  // To wire it up, paste the deployed Web App URL in APPS_SCRIPT_URL below.
+// ── Calculate and render totals ───────────────────────────────────────────────
+function updateTotals() {
+  const counts = {};
+  let totalVisits = 0;
+  const agencies = {}; // key → { label, counts, total }
 
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby0Z8bNs6rs9YkqgVZSbyKjJnBDm8sChAUidBMzdTeNKarPPbEhWj6Zr_XF2fSlslEL/exec';
+  for (let i = 0; i < NUM_ROWS; i++) {
+    const patient = g('patient', i);
+    const agency  = g('agency', i);
 
-  const submitBtn    = document.getElementById('submit-btn');
-  const submitStatus = document.getElementById('submit-status');
+    DAYS.forEach(d => {
+      parseCodes(g(d, i)).forEach(code => {
+        counts[code] = (counts[code] || 0) + 1;
+        // MV is NOT counted in total visits
+        if (PAYABLE_CODES.includes(code)) totalVisits++;
 
-  // ---- Therapist identity (remembered per-browser) ----
-  // Save first name, last name, and email after a successful submission so
-  // the therapist doesn't retype them every week.
-  const IDENTITY_KEY = 'rehabaction.therapistIdentity.v1';
-  const firstNameInput = document.getElementById('first-name');
-  const lastNameInput  = document.getElementById('last-name');
-  const emailInput     = document.getElementById('therapist-email');
-
-  function loadIdentity() {
-    try {
-      const id = JSON.parse(localStorage.getItem(IDENTITY_KEY) || '{}');
-      if (id.firstName && !firstNameInput.value) firstNameInput.value = id.firstName;
-      if (id.lastName  && !lastNameInput.value)  lastNameInput.value  = id.lastName;
-      if (id.email     && !emailInput.value)     emailInput.value     = id.email;
-    } catch (e) { /* ignore */ }
-  }
-
-  function saveIdentity(firstName, lastName, email) {
-    try {
-      localStorage.setItem(IDENTITY_KEY, JSON.stringify({ firstName, lastName, email }));
-    } catch (e) { /* ignore */ }
-  }
-
-  loadIdentity();
-
-  function isValidEmail(s) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s || '').trim());
-  }
-
-  function showStatus(msg, kind) {
-    submitStatus.hidden = false;
-    submitStatus.textContent = msg;
-    submitStatus.className = 'submit-status ' + kind;
-  }
-
-  function collectRows() {
-    const rows = [];
-    document.querySelectorAll('#invoice-rows tr').forEach(tr => {
-      const row = { rowNum: Number(tr.dataset.rowNum) };
-      tr.querySelectorAll('[data-field]').forEach(el => {
-        // Cells are now <input> elements, so read .value (not .textContent).
-        row[el.dataset.field] = (el.value || '').trim();
-      });
-      rows.push(row);
-    });
-    // Drop fully-empty rows so the summary isn't padded with blanks.
-    return rows.filter(r =>
-      r.patient || r.company || r.notes ||
-      dayKeys.some(k => r[k])
-    );
-  }
-
-  function summarizeVisits(rows) {
-    // Each non-empty day cell is one logged visit. Tally by visit-type code
-    // (the cell text, e.g., "TX", "MV") so the email/Sheet has a breakdown.
-    const byType = {};
-    let total = 0;
-    rows.forEach(r => {
-      dayKeys.forEach(k => {
-        const code = (r[k] || '').toUpperCase().trim();
-        if (code) {
-          total += 1;
-          byType[code] = (byType[code] || 0) + 1;
+        if (patient) {
+          const key = agency.toUpperCase() || '__NONE__';
+          if (!agencies[key]) agencies[key] = { label: agency || '(no agency)', counts: {}, total: 0 };
+          agencies[key].counts[code] = (agencies[key].counts[code] || 0) + 1;
+          if (PAYABLE_CODES.includes(code)) agencies[key].total++;
         }
       });
     });
-    return { total, byType };
   }
 
-  // ---- Draft auto-save ----
-  // Save form state to localStorage on every keystroke (debounced) so a
-  // therapist can fill out the invoice across multiple sittings — close the
-  // tab Tuesday, reopen Friday, pick up where they left off. One draft per
-  // week-ending date, so a late submission for last week doesn't collide
-  // with an in-progress invoice for this week. The draft is wiped once the
-  // invoice is successfully submitted.
-  const DRAFT_KEY_PREFIX = 'rehabaction.draft.v1.';
-  const draftStatus = document.getElementById('draft-status');
-  let draftSaveTimer = null;
-  let currentDraftWeek = null;
+  renderTotals(counts, totalVisits, agencies);
+}
 
-  function draftKey(weekEnding) { return DRAFT_KEY_PREFIX + weekEnding; }
+function renderTotals(counts, totalVisits, agencies) {
+  const order = ['TX','E','RA','DC','NV','SOC','ROC','RC','MV'];
 
-  function formatTimeShort(d) {
-    return d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+  // Overall visit type grid
+  let html = '<div class="totals-grid">';
+  html += `<div class="total-item t-main"><span class="total-label">TOTAL VISITS</span><span class="total-val">${totalVisits}</span></div>`;
+  order.forEach(c => {
+    const n = counts[c] || 0;
+    if (!n) return;
+    const mv = c === 'MV';
+    html += `<div class="total-item${mv ? ' t-mv' : ''}">
+      <span class="total-label">${c}</span>
+      <span class="total-val">${n}</span>
+      ${mv ? '<span class="t-mv-note">not counted</span>' : ''}
+    </div>`;
+  });
+  // Unknown / unlisted codes
+  const knownSet = new Set(ALL_KNOWN);
+  const others = Object.entries(counts).filter(([k]) => !knownSet.has(k));
+  if (others.length) {
+    html += `<div class="total-item"><span class="total-label">OTHER</span>
+      <span class="total-val" style="font-size:13px">${others.map(([k,v])=>`${k}:${v}`).join(' ')}</span></div>`;
+  }
+  html += '</div>';
+
+  // Per-agency breakdown
+  const agList = Object.values(agencies);
+  if (agList.length) {
+    html += '<div class="agency-breakdown"><h3>By Agency</h3><div class="agency-blocks">';
+    agList.forEach(ag => {
+      const parts = order.filter(c => ag.counts[c]).map(c =>
+        `<span class="${c==='MV'?'code-mv':''}">${c}:${ag.counts[c]}</span>`
+      ).join(' ');
+      html += `<div class="agency-block">
+        <div class="agency-name">${esc(ag.label)}</div>
+        <div class="agency-counts"><span class="agency-total">Total: ${ag.total}</span> ${parts}</div>
+      </div>`;
+    });
+    html += '</div></div>';
   }
 
-  function showDraftStatus(text) {
-    if (!draftStatus) return;
-    draftStatus.textContent = text;
-    draftStatus.hidden = false;
-  }
+  document.getElementById('totalsSection').innerHTML = html;
+}
 
-  function scheduleDraftSave() {
-    clearTimeout(draftSaveTimer);
-    draftSaveTimer = setTimeout(() => saveDraftNow(), 600);
+// ── Draft persistence (localStorage) ─────────────────────────────────────────
+function saveDraft() {
+  const draft = {
+    firstName:  document.getElementById('firstName').value,
+    lastName:   document.getElementById('lastName').value,
+    email:      document.getElementById('email').value,
+    weekEnding: document.getElementById('weekEnding').value,
+    rows: []
+  };
+  for (let i = 0; i < NUM_ROWS; i++) {
+    const row = { p: g('patient',i), a: g('agency',i), n: g('notes',i) };
+    DAYS.forEach(d => { row[d] = g(d,i); });
+    draft.rows.push(row);
   }
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    localStorage.setItem(INFO_KEY, JSON.stringify({
+      firstName: draft.firstName,
+      lastName:  draft.lastName,
+      email:     draft.email
+    }));
+  } catch(e) {}
+}
 
-  function saveDraftNow(forWeek) {
-    const week = forWeek || weekInput.value;
-    if (!week) return;
-    const draft = { rows: collectRows(), savedAt: new Date().toISOString() };
-    try {
-      localStorage.setItem(draftKey(week), JSON.stringify(draft));
-      showDraftStatus(`Draft saved at ${formatTimeShort(new Date(draft.savedAt))}`);
-    } catch (e) { /* storage disabled — silently skip */ }
-  }
+function loadDraft() {
+  try {
+    // Therapist name/email persists independently across weeks
+    const info = JSON.parse(localStorage.getItem(INFO_KEY) || 'null');
+    if (info) {
+      document.getElementById('firstName').value = info.firstName || '';
+      document.getElementById('lastName').value  = info.lastName  || '';
+      document.getElementById('email').value     = info.email     || '';
+    }
+    // Full week draft
+    const draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
+    if (!draft) return;
+    if (draft.weekEnding) document.getElementById('weekEnding').value = draft.weekEnding;
 
-  function loadDraft(week) {
-    if (!week) return null;
-    try { return JSON.parse(localStorage.getItem(draftKey(week)) || 'null'); }
-    catch (e) { return null; }
-  }
+    (draft.rows || []).forEach((row, i) => {
+      if (i >= NUM_ROWS) return;
+      const pI = q('patient',i); if (pI) { pI.value = row.p||''; autoResize(pI,150); }
+      const aI = q('agency', i); if (aI) { aI.value = row.a||''; autoResize(aI,100); }
+      const nI = q('notes',  i); if (nI) nI.value = row.n||'';
+      DAYS.forEach(d => { const dI = q(d,i); if(dI) dI.value = row[d]||''; });
+    });
+    updateTotals();
+  } catch(e) {}
+}
 
-  function clearDraftFor(week) {
-    try { localStorage.removeItem(draftKey(week)); } catch (e) { /* ignore */ }
-    if (draftStatus) draftStatus.hidden = true;
-  }
-
-  function applyDraftToForm(draft) {
-    if (!draft || !draft.rows) return;
-    const byRowNum = {};
-    draft.rows.forEach(r => { byRowNum[r.rowNum] = r; });
-    document.querySelectorAll('#invoice-rows tr').forEach(tr => {
-      const data = byRowNum[Number(tr.dataset.rowNum)];
-      tr.querySelectorAll('[data-field]').forEach(el => {
-        el.value = (data && data[el.dataset.field]) || '';
-      });
+// ── Clear saved patient data ──────────────────────────────────────────────────
+function clearSaved() {
+  if (!confirm('Clear all saved patient data from this form?')) return;
+  try { localStorage.removeItem(DRAFT_KEY); } catch(e) {}
+  for (let i = 0; i < NUM_ROWS; i++) {
+    ['patient','agency','notes',...DAYS].forEach(f => {
+      const inp = q(f,i);
+      if (!inp) return;
+      inp.value = '';
+      inp.classList.remove('agency-error');
+      if (f === 'patient') autoResize(inp, 150);
+      if (f === 'agency')  autoResize(inp, 100);
     });
   }
+  updateTotals();
+}
 
-  function clearAllRows() {
-    document.querySelectorAll('#invoice-rows [data-field]').forEach(el => {
-      el.value = '';
-    });
+// ── Submit ────────────────────────────────────────────────────────────────────
+async function submitInvoice() {
+  const firstName  = document.getElementById('firstName').value.trim();
+  const lastName   = document.getElementById('lastName').value.trim();
+  const email      = document.getElementById('email').value.trim();
+  const weekEnding = document.getElementById('weekEnding').value;
+
+  // ── Header field validation
+  if (!firstName || !lastName) {
+    alert('Please enter your first and last name.'); return;
+  }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert('Please enter a valid email address.'); return;
+  }
+  if (!weekEnding) {
+    alert('Please select the week-ending Saturday date.'); return;
   }
 
-  function flushAndSwitchWeek(newWeek) {
-    // Save current rows under the previous week, then load (or clear) the new.
-    if (currentDraftWeek && currentDraftWeek !== newWeek) {
-      clearTimeout(draftSaveTimer);
-      saveDraftNow(currentDraftWeek);
+  // ── Agency required for every filled patient row
+  const missingAgency = [];
+  for (let i = 0; i < NUM_ROWS; i++) {
+    if (g('patient',i) && !g('agency',i)) {
+      missingAgency.push(i + 1);
+      q('agency',i)?.classList.add('agency-error');
     }
-    const draft = loadDraft(newWeek);
-    if (draft) {
-      applyDraftToForm(draft);
-      showDraftStatus(`Restored draft from ${formatTimeShort(new Date(draft.savedAt))}`);
-    } else if (currentDraftWeek !== null) {
-      // Switching to a week with no saved draft — start with a clean form.
-      clearAllRows();
-      if (draftStatus) draftStatus.hidden = true;
-    }
-    currentDraftWeek = newWeek;
+  }
+  if (missingAgency.length) {
+    alert(
+      'Agency name is required for every patient.\n' +
+      'Missing on row' + (missingAgency.length > 1 ? 's' : '') +
+      ': ' + missingAgency.join(', ')
+    );
+    return;
   }
 
-  // Auto-save on every keystroke in any row cell.
-  document.querySelectorAll('#invoice-rows input').forEach(input => {
-    input.addEventListener('input', scheduleDraftSave);
-  });
+  // ── Must have at least one patient
+  const patients = [];
+  for (let i = 0; i < NUM_ROWS; i++) {
+    const p = g('patient',i);
+    if (!p) continue;
+    const row = { patient: p, agency: g('agency',i), notes: g('notes',i) };
+    DAYS.forEach(d => { row[d] = g(d,i); });
+    patients.push(row);
+  }
+  if (!patients.length) {
+    alert('Please enter at least one patient before submitting.'); return;
+  }
 
-  // Save identity on blur (not just on submit) so name/email survive a tab
-  // close even if the therapist hasn't hit Submit yet.
-  [firstNameInput, lastNameInput, emailInput].forEach(input => {
-    input.addEventListener('blur', () => {
-      saveIdentity(
-        firstNameInput.value.trim(),
-        lastNameInput.value.trim(),
-        emailInput.value.trim()
-      );
-    });
-  });
+  // ── Tally codes for submission
+  const counts = {};
+  let totalVisits = 0;
+  for (let i = 0; i < NUM_ROWS; i++) {
+    DAYS.forEach(d => parseCodes(g(d,i)).forEach(code => {
+      counts[code] = (counts[code] || 0) + 1;
+      if (PAYABLE_CODES.includes(code)) totalVisits++;
+    }));
+  }
+  const knownSet = new Set(ALL_KNOWN);
+  const otherCodes = Object.entries(counts)
+    .filter(([k]) => !knownSet.has(k))
+    .map(([k,v]) => `${k}:${v}`)
+    .join(', ');
 
-  // Switch drafts when the week-ending date changes.
-  weekInput.addEventListener('change', () => {
-    if (!weekInput.value) return;
-    flushAndSwitchWeek(weekInput.value);
-  });
+  const payload = {
+    firstName, lastName, email, weekEnding,
+    totalVisits,
+    tx:   counts.TX  || 0,
+    mv:   counts.MV  || 0,   // tracked but not in total
+    eval: counts.E   || 0,
+    ra:   counts.RA  || 0,
+    dc:   counts.DC  || 0,
+    nv:   counts.NV  || 0,   // Non-Visit Oasis Discharge — payable at reduced rate
+    soc:  counts.SOC || 0,
+    roc:  counts.ROC || 0,
+    rc:   counts.RC  || 0,
+    otherCodes,
+    patientCount: patients.length,
+    patients: JSON.stringify(patients)
+  };
 
-  // Last-resort save before the tab closes, in case a keystroke landed within
-  // the 600ms debounce window.
-  window.addEventListener('beforeunload', () => {
-    if (weekInput.value) saveDraftNow();
-  });
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
 
-  // Initial draft load for whatever week we defaulted to.
-  flushAndSwitchWeek(weekInput.value);
+  try {
+    const res  = await fetch(APPS_SCRIPT_URL, { method:'POST', body: JSON.stringify(payload) });
+    const data = await res.json();
 
-  submitBtn.addEventListener('click', async () => {
-    const firstName      = firstNameInput.value.trim();
-    const lastName       = lastNameInput.value.trim();
-    const therapistEmail = emailInput.value.trim();
-    const weekEnding     = weekInput.value;
-
-    if (!firstName || !lastName) {
-      showStatus('Please enter both first and last name.', 'error');
-      return;
-    }
-    if (!therapistEmail) {
-      showStatus('Please enter your email so we can send you a copy of this invoice.', 'error');
-      return;
-    }
-    if (!isValidEmail(therapistEmail)) {
-      showStatus('That email address doesn’t look right — please check the spelling.', 'error');
-      return;
-    }
-    if (!weekEnding) {
-      showStatus('Please pick the week-ending Saturday.', 'error');
-      return;
-    }
-
-    const rows = collectRows();
-    if (rows.length === 0) {
-      showStatus('No visits entered yet — fill in at least one row.', 'error');
-      return;
-    }
-
-    const summary = summarizeVisits(rows);
-    const payload = {
-      firstName,
-      lastName,
-      therapistEmail,
-      weekEnding,        // ISO yyyy-mm-dd
-      submittedAt: new Date().toISOString(),
-      rows,
-      summary
-    };
-
-    if (!APPS_SCRIPT_URL) {
-      showStatus(
-        'Submit endpoint not configured yet. Open this file and paste your ' +
-        'Apps Script URL into the APPS_SCRIPT_URL constant. (See setup instructions.)',
-        'error'
-      );
-      console.log('Would submit payload:', payload);
-      return;
-    }
-
-    submitBtn.disabled = true;
-    showStatus('Submitting…', 'info');
-
-    try {
-      // Content-Type text/plain avoids a CORS preflight; Apps Script can
-      // still parse e.postData.contents as JSON on the server side.
-      const res = await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
-      });
-      const result = await res.json();
-      if (result.ok) {
-        // Remember name + email so they don't have to retype next week.
-        saveIdentity(firstName, lastName, therapistEmail);
-        // The invoice is filed — wipe the auto-save draft for this week.
-        clearDraftFor(weekEnding);
-        showStatus(
-          `Invoice submitted. Saved as "${result.fileName}". A copy was emailed to ${therapistEmail}.`,
-          'success'
-        );
-      } else {
-        showStatus('Submission failed: ' + (result.error || 'unknown error'), 'error');
-        submitBtn.disabled = false;
+    if (data.status === 'success' || data.result === 'success') {
+      alert('✓ Invoice submitted successfully!\nA confirmation email will arrive shortly.');
+      try { localStorage.removeItem(DRAFT_KEY); } catch(e) {}
+      // Clear patient rows; keep therapist name / email
+      for (let i = 0; i < NUM_ROWS; i++) {
+        ['patient','agency','notes',...DAYS].forEach(f => {
+          const inp = q(f,i); if (!inp) return;
+          inp.value = '';
+          inp.classList.remove('agency-error');
+          if (f === 'patient') autoResize(inp,150);
+          if (f === 'agency')  autoResize(inp,100);
+        });
       }
-    } catch (err) {
-      showStatus('Network error: ' + err.message, 'error');
-      submitBtn.disabled = false;
+      updateTotals();
+      setDefaultWeek();
+    } else {
+      alert('Submission error: ' + (data.message || 'Unknown error. Please try again or email kari@rehabaction.com'));
     }
-  });
+  } catch(e) {
+    alert(
+      'Network error — please check your connection and try again.\n' +
+      'If this keeps happening, email kari@rehabaction.com\n\n' + e.message
+    );
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Submit Invoice';
+  }
+}
 </script>
 </body>
 </html>

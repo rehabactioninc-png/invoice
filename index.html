@@ -43,7 +43,6 @@ td{border:1px solid #ddd;padding:2px 3px;vertical-align:middle}
 tr:nth-child(even) td{background:#f5f8fb}
 tr:nth-child(odd)  td{background:#fff}
 
-/* Day columns — narrower so patient name has room */
 .col-day{width:40px;max-width:40px;text-align:center}
 
 /* ── Row inputs ── */
@@ -64,7 +63,6 @@ tr:nth-child(odd)  td{background:#fff}
 }
 input:focus{background:#fffde7 !important}
 
-/* Agency required highlight */
 .agency-error{background:#ffe0e0 !important;outline:1.5px solid #cc0000 !important;border-radius:2px}
 th .req{color:#ffd54f;margin-left:2px;font-size:13px}
 
@@ -129,19 +127,16 @@ th .req{color:#ffd54f;margin-left:2px;font-size:13px}
 </head>
 <body>
 
-<!-- Datalists for autocomplete -->
 <datalist id="patientList"></datalist>
 <datalist id="agencyList"></datalist>
 
 <div class="page">
 
-  <!-- Header -->
   <div class="hdr">
     <h1>REHAB ACTION, INC</h1>
     <h2>Invoice</h2>
   </div>
 
-  <!-- Therapist Info -->
   <div class="info-grid">
     <div class="info-row">
       <label>Therapist First Name:</label>
@@ -161,7 +156,6 @@ th .req{color:#ffd54f;margin-left:2px;font-size:13px}
     </div>
   </div>
 
-  <!-- Patient Table -->
   <div class="table-scroll">
     <table id="invoiceTable">
       <thead>
@@ -182,7 +176,6 @@ th .req{color:#ffd54f;margin-left:2px;font-size:13px}
     </table>
   </div>
 
-  <!-- Totals -->
   <div class="totals-section" id="totalsSection">
     <div class="totals-grid">
       <div class="total-item t-main">
@@ -192,7 +185,6 @@ th .req{color:#ffd54f;margin-left:2px;font-size:13px}
     </div>
   </div>
 
-  <!-- Legend -->
   <div class="legend">
     <span>TX = TREATMENT</span>
     <span>MV = MISSED VISIT <span class="lnote">(not counted in total)</span></span>
@@ -205,34 +197,32 @@ th .req{color:#ffd54f;margin-left:2px;font-size:13px}
     <span>ROC = RESUMPTION OF CARE OASIS</span>
   </div>
 
-  <!-- Reminder -->
   <div class="reminder">
     Invoices must be emailed by 9am every Monday to kari@rehabaction.com<br>
     <strong>REMEMBER:</strong> Check your home page for pending or needs corrections visits. Only completed approved visits will be paid.
   </div>
 
-  <!-- Buttons -->
   <div class="btn-row">
     <button class="btn-submit" id="submitBtn" onclick="submitInvoice()">Submit Invoice</button>
     <button class="btn-clear" onclick="clearSavedPatients()">Clear saved patient names</button>
   </div>
 
-</div><!-- .page -->
+</div>
 
 <script>
-// ── Constants ────────────────────────────────────────────────────────────────
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby0Z8bNs6rs9YkqgVZSbyKjJnBDm8sChAUidBMzdTeNKarPPbEhWj6Zr_XF2fSlslEL/exec';
 const NUM_ROWS      = 20;
 const DAYS          = ['SUN','M','T','W','Th','F','SAT'];
-const PAYABLE_CODES = ['TX','E','RA','DC','NV','SOC','ROC','RC']; // MV excluded
+const PAYABLE_CODES = ['TX','E','RA','DC','NV','SOC','ROC','RC']; // MV NOT counted
 const ALL_KNOWN     = [...PAYABLE_CODES, 'MV'];
 
-// Storage keys
 const DRAFT_KEY   = 'raiDraft_v3';
 const INFO_KEY    = 'raiTherapistInfo';
-const HISTORY_KEY = 'raiPatientHistory'; // { "john doe": { name, agency } }
+const HISTORY_KEY = 'raiPatientHistory';
 
-// ── Init ─────────────────────────────────────────────────────────────────────
+// Map abbreviated day keys the form uses → full names Apps Script expects
+const DAY_MAP = { SUN:'sun', M:'mon', T:'tue', W:'wed', Th:'thu', F:'fri', SAT:'sat' };
+
 window.addEventListener('DOMContentLoaded', () => {
   buildTable();
   setDefaultWeek();
@@ -243,61 +233,41 @@ window.addEventListener('DOMContentLoaded', () => {
   );
 });
 
-// ── Build table rows ──────────────────────────────────────────────────────────
+// ── Build table ───────────────────────────────────────────────────────────────
 function buildTable() {
   const tbody = document.getElementById('tableBody');
   for (let i = 0; i < NUM_ROWS; i++) {
     const tr = document.createElement('tr');
 
-    // Patient Name — autocomplete from history
+    // Patient Name
     const tdP = document.createElement('td');
-    const inP = mkInp('input-patient', 'patient', i);
-    inP.setAttribute('list', 'patientList');
-    inP.addEventListener('input', () => {
-      autoResize(inP, 150);
-      checkAgency(i);
-      updateTotals();
-      saveDraft();
-      updateHistory(i);
-    });
-    // When a datalist suggestion is selected, auto-fill the agency
-    inP.addEventListener('change', () => {
-      autoResize(inP, 150);
-      autoFillAgency(i);
-    });
+    const inP = mkInp('input-patient','patient',i);
+    inP.setAttribute('list','patientList');
+    inP.addEventListener('input', () => { autoResize(inP,150); checkAgency(i); updateTotals(); saveDraft(); updateHistory(i); });
+    inP.addEventListener('change', () => { autoResize(inP,150); autoFillAgency(i); });
     tdP.appendChild(inP); tr.appendChild(tdP);
 
-    // Agency — autocomplete from history
+    // Agency
     const tdA = document.createElement('td');
-    const inA = mkInp('input-agency', 'agency', i);
-    inA.setAttribute('list', 'agencyList');
-    inA.addEventListener('input', () => {
-      autoResize(inA, 100);
-      checkAgency(i);
-      updateTotals();
-      saveDraft();
-      updateHistory(i);
-    });
-    inA.addEventListener('change', () => autoResize(inA, 100));
+    const inA = mkInp('input-agency','agency',i);
+    inA.setAttribute('list','agencyList');
+    inA.addEventListener('input', () => { autoResize(inA,100); checkAgency(i); updateTotals(); saveDraft(); updateHistory(i); });
+    inA.addEventListener('change', () => autoResize(inA,100));
     tdA.appendChild(inA); tr.appendChild(tdA);
 
     // Day columns
     DAYS.forEach(d => {
       const tdD = document.createElement('td');
       tdD.className = 'col-day';
-      const inD = mkInp('input-day', d, i);
+      const inD = mkInp('input-day',d,i);
       inD.maxLength = 10;
-      inD.addEventListener('input', () => {
-        inD.value = inD.value.toUpperCase();
-        updateTotals();
-        saveDraft();
-      });
+      inD.addEventListener('input', () => { inD.value = inD.value.toUpperCase(); updateTotals(); saveDraft(); });
       tdD.appendChild(inD); tr.appendChild(tdD);
     });
 
     // Notes
     const tdN = document.createElement('td');
-    const inN = mkInp('input-notes', 'notes', i);
+    const inN = mkInp('input-notes','notes',i);
     inN.addEventListener('input', saveDraft);
     tdN.appendChild(inN); tr.appendChild(tdN);
 
@@ -307,33 +277,27 @@ function buildTable() {
 
 function mkInp(cls, field, row) {
   const inp = document.createElement('input');
-  inp.type = 'text';
-  inp.className = cls;
-  inp.dataset.f = field;
-  inp.dataset.r = String(row);
+  inp.type = 'text'; inp.className = cls;
+  inp.dataset.f = field; inp.dataset.r = String(row);
   inp.autocomplete = 'off';
   return inp;
 }
 
-// ── Auto-resize input to fit its typed content ────────────────────────────────
 function autoResize(inp, minW) {
   inp.style.width = '1px';
   inp.style.width = Math.max(inp.scrollWidth + 4, minW) + 'px';
 }
 
-// ── Agency validation highlight ───────────────────────────────────────────────
 function checkAgency(row) {
   const aInp = q('agency', row);
   if (!aInp) return;
   aInp.classList.toggle('agency-error', !!g('patient', row) && !g('agency', row));
 }
 
-// ── Auto-fill agency when patient name matches history ────────────────────────
 function autoFillAgency(row) {
   const name = g('patient', row).toLowerCase();
   if (!name) return;
-  const history = loadHistory();
-  const match = history[name];
+  const match = loadHistory()[name];
   if (match && match.agency) {
     const aInp = q('agency', row);
     if (aInp && !aInp.value.trim()) {
@@ -344,165 +308,120 @@ function autoFillAgency(row) {
   }
 }
 
-// ── Default week ending to most-recent Saturday ───────────────────────────────
 function setDefaultWeek() {
   const today = new Date();
-  const day = today.getDay(); // 0=Sun … 6=Sat
+  const day = today.getDay();
   const daysBack = day === 6 ? 0 : day + 1;
   const sat = new Date(today);
   sat.setDate(today.getDate() - daysBack);
   document.getElementById('weekEnding').value = sat.toISOString().split('T')[0];
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function q(field, row) {
-  return document.querySelector(`input[data-f="${field}"][data-r="${row}"]`);
-}
-function g(field, row) {
-  return (q(field, row)?.value || '').trim();
-}
+function q(field, row) { return document.querySelector(`input[data-f="${field}"][data-r="${row}"]`); }
+function g(field, row) { return (q(field, row)?.value || '').trim(); }
 function parseCodes(str) {
   if (!str) return [];
   return str.toUpperCase().split(/[\s,/|+]+/).filter(Boolean);
 }
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// ── Patient / Agency history (persists across weeks) ──────────────────────────
+// ── History (patient autocomplete, persists across weeks) ─────────────────────
 function loadHistory() {
   try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '{}'); } catch(e) { return {}; }
 }
-
 function updateHistory(row) {
-  const name   = g('patient', row);
-  const agency = g('agency',  row);
+  const name = g('patient', row); const agency = g('agency', row);
   if (!name) return;
-  const history = loadHistory();
-  const key = name.toLowerCase();
-  history[key] = { name, agency: agency || (history[key]?.agency || '') };
-  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); } catch(e) {}
+  const h = loadHistory(); const key = name.toLowerCase();
+  h[key] = { name, agency: agency || (h[key]?.agency || '') };
+  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch(e) {}
   refreshSuggestions();
 }
-
-function addSubmittedPatientsToHistory(patients) {
-  const history = loadHistory();
+function addToHistory(patients) {
+  const h = loadHistory();
   patients.forEach(p => {
     if (!p.patient) return;
     const key = p.patient.toLowerCase();
-    history[key] = { name: p.patient, agency: p.agency || (history[key]?.agency || '') };
+    h[key] = { name: p.patient, agency: p.agency || (h[key]?.agency || '') };
   });
-  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); } catch(e) {}
+  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch(e) {}
   refreshSuggestions();
 }
-
-// Update the <datalist> elements from stored history
 function refreshSuggestions() {
-  const history = loadHistory();
-  const entries = Object.values(history);
-
-  const patientList = document.getElementById('patientList');
-  patientList.innerHTML = entries
-    .map(h => `<option value="${esc(h.name)}">`)
-    .join('');
-
-  const agencyList = document.getElementById('agencyList');
+  const entries = Object.values(loadHistory());
+  document.getElementById('patientList').innerHTML =
+    entries.map(h => `<option value="${esc(h.name)}">`).join('');
   const agencies = [...new Set(entries.map(h => h.agency).filter(Boolean))];
-  agencyList.innerHTML = agencies
-    .map(a => `<option value="${esc(a)}">`)
-    .join('');
+  document.getElementById('agencyList').innerHTML =
+    agencies.map(a => `<option value="${esc(a)}">`).join('');
 }
 
-// ── Totals calculation & rendering ───────────────────────────────────────────
+// ── Totals ────────────────────────────────────────────────────────────────────
 function updateTotals() {
-  const counts = {};
-  let totalVisits = 0;
-  const agencies = {};
-
+  const counts = {}; let totalVisits = 0; const agencies = {};
   for (let i = 0; i < NUM_ROWS; i++) {
-    const patient = g('patient', i);
-    const agency  = g('agency',  i);
-
+    const patient = g('patient',i); const agency = g('agency',i);
     DAYS.forEach(d => {
-      parseCodes(g(d, i)).forEach(code => {
+      parseCodes(g(d,i)).forEach(code => {
         counts[code] = (counts[code] || 0) + 1;
-        if (PAYABLE_CODES.includes(code)) totalVisits++;    // MV NOT counted
-
+        if (PAYABLE_CODES.includes(code)) totalVisits++;
         if (patient) {
           const key = agency.toUpperCase() || '__NONE__';
-          if (!agencies[key]) agencies[key] = { label: agency || '(no agency)', counts: {}, total: 0 };
+          if (!agencies[key]) agencies[key] = { label: agency || '(no agency)', counts:{}, total:0 };
           agencies[key].counts[code] = (agencies[key].counts[code] || 0) + 1;
           if (PAYABLE_CODES.includes(code)) agencies[key].total++;
         }
       });
     });
   }
-
   renderTotals(counts, totalVisits, agencies);
 }
 
 function renderTotals(counts, totalVisits, agencies) {
   const order = ['TX','E','RA','DC','NV','SOC','ROC','RC','MV'];
-
   let html = '<div class="totals-grid">';
   html += `<div class="total-item t-main"><span class="total-label">TOTAL VISITS</span><span class="total-val">${totalVisits}</span></div>`;
   order.forEach(c => {
-    const n = counts[c] || 0;
-    if (!n) return;
+    const n = counts[c] || 0; if (!n) return;
     const mv = c === 'MV';
     html += `<div class="total-item${mv?' t-mv':''}">
-      <span class="total-label">${c}</span>
-      <span class="total-val">${n}</span>
-      ${mv ? '<span class="t-mv-note">not counted</span>' : ''}
+      <span class="total-label">${c}</span><span class="total-val">${n}</span>
+      ${mv?'<span class="t-mv-note">not counted</span>':''}
     </div>`;
   });
   const knownSet = new Set(ALL_KNOWN);
-  const others = Object.entries(counts).filter(([k]) => !knownSet.has(k));
-  if (others.length) {
-    html += `<div class="total-item"><span class="total-label">OTHER</span>
-      <span class="total-val" style="font-size:13px">${others.map(([k,v])=>`${k}:${v}`).join(' ')}</span></div>`;
-  }
+  const others = Object.entries(counts).filter(([k])=>!knownSet.has(k));
+  if (others.length) html += `<div class="total-item"><span class="total-label">OTHER</span><span class="total-val" style="font-size:13px">${others.map(([k,v])=>`${k}:${v}`).join(' ')}</span></div>`;
   html += '</div>';
-
   const agList = Object.values(agencies);
   if (agList.length) {
     html += '<div class="agency-breakdown"><h3>By Agency</h3><div class="agency-blocks">';
     agList.forEach(ag => {
-      const parts = order.filter(c => ag.counts[c]).map(c =>
-        `<span class="${c==='MV'?'code-mv':''}">${c}:${ag.counts[c]}</span>`
-      ).join(' ');
-      html += `<div class="agency-block">
-        <div class="agency-name">${esc(ag.label)}</div>
-        <div class="agency-counts"><span class="agency-total">Total: ${ag.total}</span> ${parts}</div>
-      </div>`;
+      const parts = order.filter(c=>ag.counts[c]).map(c=>`<span class="${c==='MV'?'code-mv':''}">${c}:${ag.counts[c]}</span>`).join(' ');
+      html += `<div class="agency-block"><div class="agency-name">${esc(ag.label)}</div><div class="agency-counts"><span class="agency-total">Total: ${ag.total}</span> ${parts}</div></div>`;
     });
     html += '</div></div>';
   }
-
   document.getElementById('totalsSection').innerHTML = html;
 }
 
 // ── Draft save / load ─────────────────────────────────────────────────────────
 function saveDraft() {
   const draft = {
-    firstName:  document.getElementById('firstName').value,
-    lastName:   document.getElementById('lastName').value,
-    email:      document.getElementById('email').value,
-    weekEnding: document.getElementById('weekEnding').value,
-    rows: []
+    firstName: document.getElementById('firstName').value,
+    lastName:  document.getElementById('lastName').value,
+    email:     document.getElementById('email').value,
+    weekEnding:document.getElementById('weekEnding').value,
+    rows:[]
   };
   for (let i = 0; i < NUM_ROWS; i++) {
-    const row = { p: g('patient',i), a: g('agency',i), n: g('notes',i) };
-    DAYS.forEach(d => { row[d] = g(d, i); });
+    const row = { p:g('patient',i), a:g('agency',i), n:g('notes',i) };
+    DAYS.forEach(d => { row[d] = g(d,i); });
     draft.rows.push(row);
   }
   try {
     localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-    localStorage.setItem(INFO_KEY, JSON.stringify({
-      firstName: draft.firstName,
-      lastName:  draft.lastName,
-      email:     draft.email
-    }));
+    localStorage.setItem(INFO_KEY, JSON.stringify({ firstName:draft.firstName, lastName:draft.lastName, email:draft.email }));
   } catch(e) {}
 }
 
@@ -515,34 +434,31 @@ function loadDraft() {
       document.getElementById('email').value     = info.email     || '';
     }
   } catch(e) {}
-
   try {
     const draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
     if (!draft) return;
     if (draft.weekEnding) document.getElementById('weekEnding').value = draft.weekEnding;
     (draft.rows || []).forEach((row, i) => {
       if (i >= NUM_ROWS) return;
-      const pI = q('patient', i); if (pI) { pI.value = row.p||''; autoResize(pI, 150); }
-      const aI = q('agency',  i); if (aI) { aI.value = row.a||''; autoResize(aI, 100); }
-      const nI = q('notes',   i); if (nI) nI.value = row.n||'';
-      DAYS.forEach(d => { const dI = q(d, i); if (dI) dI.value = row[d]||''; });
+      const pI=q('patient',i); if(pI){pI.value=row.p||'';autoResize(pI,150);}
+      const aI=q('agency',i);  if(aI){aI.value=row.a||'';autoResize(aI,100);}
+      const nI=q('notes',i);   if(nI) nI.value=row.n||'';
+      DAYS.forEach(d=>{const dI=q(d,i);if(dI)dI.value=row[d]||'';});
     });
     updateTotals();
   } catch(e) {}
 }
 
-// ── Clear saved patient data (NOT therapist name/email or history) ────────────
+// ── Clear patient rows ────────────────────────────────────────────────────────
 function clearSavedPatients() {
-  if (!confirm('Clear all patient rows from this form?\n\n(Your name, email, and patient history for autocomplete are kept.)')) return;
+  if (!confirm('Clear all patient rows?\n\n(Your name, email, and autocomplete history are kept.)')) return;
   try { localStorage.removeItem(DRAFT_KEY); } catch(e) {}
   for (let i = 0; i < NUM_ROWS; i++) {
     ['patient','agency','notes',...DAYS].forEach(f => {
-      const inp = q(f, i);
-      if (!inp) return;
-      inp.value = '';
-      inp.classList.remove('agency-error');
-      if (f === 'patient') autoResize(inp, 150);
-      if (f === 'agency')  autoResize(inp, 100);
+      const inp = q(f,i); if (!inp) return;
+      inp.value = ''; inp.classList.remove('agency-error');
+      if (f==='patient') autoResize(inp,150);
+      if (f==='agency')  autoResize(inp,100);
     });
   }
   updateTotals();
@@ -559,100 +475,109 @@ async function submitInvoice() {
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('Please enter a valid email address.'); return; }
   if (!weekEnding) { alert('Please select the week-ending Saturday date.'); return; }
 
-  // Agency required for every filled patient row
+  // Agency required
   const missingAgency = [];
   for (let i = 0; i < NUM_ROWS; i++) {
-    if (g('patient', i) && !g('agency', i)) {
-      missingAgency.push(i + 1);
-      q('agency', i)?.classList.add('agency-error');
+    if (g('patient',i) && !g('agency',i)) {
+      missingAgency.push(i+1);
+      q('agency',i)?.classList.add('agency-error');
     }
   }
   if (missingAgency.length) {
     alert('Agency name is required for every patient.\nMissing on row' +
-      (missingAgency.length > 1 ? 's' : '') + ': ' + missingAgency.join(', '));
+      (missingAgency.length>1?'s':'') + ': ' + missingAgency.join(', '));
     return;
   }
 
   // Collect patients
   const patients = [];
   for (let i = 0; i < NUM_ROWS; i++) {
-    const p = g('patient', i);
-    if (!p) continue;
-    const row = { patient: p, agency: g('agency',i), notes: g('notes',i) };
-    DAYS.forEach(d => { row[d] = g(d, i); });
+    const p = g('patient',i); if (!p) continue;
+    const row = { patient:p, agency:g('agency',i), notes:g('notes',i) };
+    DAYS.forEach(d => { row[d] = g(d,i); });
     patients.push(row);
   }
   if (!patients.length) { alert('Please enter at least one patient before submitting.'); return; }
 
   // Tally codes
-  const counts = {};
-  let totalVisits = 0;
+  const counts = {}; let totalVisits = 0;
   for (let i = 0; i < NUM_ROWS; i++) {
     DAYS.forEach(d => parseCodes(g(d,i)).forEach(code => {
-      counts[code] = (counts[code] || 0) + 1;
+      counts[code] = (counts[code]||0) + 1;
       if (PAYABLE_CODES.includes(code)) totalVisits++;
     }));
   }
-  const knownSet = new Set(ALL_KNOWN);
-  const otherCodes = Object.entries(counts).filter(([k]) => !knownSet.has(k))
-    .map(([k,v]) => `${k}:${v}`).join(', ');
 
-  // Build payload — sent as URL-encoded form data so Apps Script reads e.parameter
-  const payload = new URLSearchParams({
-    firstName, lastName, email, weekEnding,
-    totalVisits,
-    tx:   counts.TX  || 0,
-    mv:   counts.MV  || 0,
-    eval: counts.E   || 0,
-    ra:   counts.RA  || 0,
-    dc:   counts.DC  || 0,
-    nv:   counts.NV  || 0,
-    soc:  counts.SOC || 0,
-    roc:  counts.ROC || 0,
-    rc:   counts.RC  || 0,
-    otherCodes,
-    patientCount: patients.length,
-    patients: JSON.stringify(patients)
-  });
+  // Build payload in the exact format Apps Script expects:
+  //   - JSON body (Content-Type: text/plain — avoids CORS preflight)
+  //   - data.rows with full day names (sun, mon, tue…) and 'company' field
+  //   - data.summary with total and byType object
+  //   - data.therapistEmail for the CC email
+  const payload = {
+    firstName,
+    lastName,
+    therapistEmail: email,
+    weekEnding,
+    submittedAt: new Date().toISOString(),
+    rows: patients.map(p => ({
+      patient: p.patient,
+      company: p.agency,       // Apps Script reads 'company'; PDF header now says 'Agency'
+      sun: p.SUN || '',
+      mon: p.M   || '',
+      tue: p.T   || '',
+      wed: p.W   || '',
+      thu: p.Th  || '',
+      fri: p.F   || '',
+      sat: p.SAT || '',
+      notes: p.notes || ''
+    })),
+    summary: {
+      total: totalVisits,
+      byType: {
+        TX:  counts.TX  || 0,
+        MV:  counts.MV  || 0,
+        E:   counts.E   || 0,
+        RA:  counts.RA  || 0,
+        DC:  counts.DC  || 0,
+        NV:  counts.NV  || 0,
+        SOC: counts.SOC || 0,
+        RC:  counts.RC  || 0,
+        ROC: counts.ROC || 0
+      }
+    }
+  };
 
   const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.textContent = 'Submitting…';
+  btn.disabled = true; btn.textContent = 'Submitting…';
 
   try {
-    // mode:'no-cors' avoids CORS preflight for cross-origin Apps Script requests.
-    // The response is opaque so we cannot read it — we optimistically show success.
+    // Send as JSON with Content-Type: text/plain — Apps Script reads e.postData.contents.
+    // mode:'no-cors' prevents CORS preflight; response is opaque so we assume success.
     await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       mode:   'no-cors',
-      body:   payload
+      body:   JSON.stringify(payload)
     });
 
-    // Save patients to persistent history (for autocomplete next week)
-    addSubmittedPatientsToHistory(patients);
-
+    addToHistory(patients);
     alert('✓ Invoice submitted!\nYou should receive a confirmation email shortly.\nIf no email arrives within a few minutes, contact kari@rehabaction.com');
 
-    // Clear draft but keep therapist name/email
     try { localStorage.removeItem(DRAFT_KEY); } catch(e) {}
     for (let i = 0; i < NUM_ROWS; i++) {
       ['patient','agency','notes',...DAYS].forEach(f => {
-        const inp = q(f, i); if (!inp) return;
-        inp.value = '';
-        inp.classList.remove('agency-error');
-        if (f === 'patient') autoResize(inp, 150);
-        if (f === 'agency')  autoResize(inp, 100);
+        const inp=q(f,i); if(!inp) return;
+        inp.value=''; inp.classList.remove('agency-error');
+        if(f==='patient') autoResize(inp,150);
+        if(f==='agency')  autoResize(inp,100);
       });
     }
-    updateTotals();
-    setDefaultWeek();
+    updateTotals(); setDefaultWeek();
 
   } catch(e) {
     alert('Network error — please check your connection and try again.\n' +
       'If this keeps happening, email kari@rehabaction.com\n\n' + e.message);
   } finally {
-    btn.disabled = false;
-    btn.textContent = 'Submit Invoice';
+    btn.disabled = false; btn.textContent = 'Submit Invoice';
   }
 }
 </script>

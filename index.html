@@ -9,17 +9,11 @@
 
 body{
   font-family:'Segoe UI',Arial,sans-serif;
-  font-size:14px;
-  background:#dde3ea;
-  color:#222;
+  font-size:14px;background:#dde3ea;color:#222;
 }
-
 .page{
-  max-width:1100px;
-  margin:20px auto;
-  background:#fff;
-  border-radius:10px;
-  box-shadow:0 4px 18px rgba(0,0,0,.18);
+  max-width:1100px;margin:20px auto;background:#fff;
+  border-radius:10px;box-shadow:0 4px 18px rgba(0,0,0,.18);
   padding:28px 28px 32px;
 }
 
@@ -40,59 +34,42 @@ body{
 
 /* ── Table ── */
 .table-scroll{overflow-x:auto;margin-bottom:14px}
-
-table{
-  border-collapse:collapse;
-  table-layout:auto;   /* lets patient/agency cols expand with content */
-  white-space:nowrap;
-}
-
+table{border-collapse:collapse;table-layout:auto;white-space:nowrap}
 th{
-  background:#002855;color:#fff;
-  font-size:11.5px;padding:7px 5px;
-  text-align:center;border:1px solid #001e40;
-  white-space:nowrap;
+  background:#002855;color:#fff;font-size:11.5px;
+  padding:7px 5px;text-align:center;border:1px solid #001e40;white-space:nowrap;
 }
 td{border:1px solid #ddd;padding:2px 3px;vertical-align:middle}
 tr:nth-child(even) td{background:#f5f8fb}
 tr:nth-child(odd)  td{background:#fff}
 
-/* Day columns — narrower to give room to Patient Name */
+/* Day columns — narrower so patient name has room */
 .col-day{width:40px;max-width:40px;text-align:center}
 
 /* ── Row inputs ── */
 .input-patient,.input-agency{
   border:none;padding:4px 5px;font-size:13px;
-  font-family:inherit;background:transparent;outline:none;
-  /* width is set dynamically by autoResize(); these are starting minimums */
+  font-family:inherit;background:transparent;outline:none;min-width:0;
 }
 .input-patient{width:150px}
 .input-agency {width:100px}
 
 .input-day{
-  border:none;width:34px;padding:3px 2px;
-  font-size:12px;text-align:center;
-  background:transparent;outline:none;
-  text-transform:uppercase;
+  border:none;width:34px;padding:3px 2px;font-size:12px;
+  text-align:center;background:transparent;outline:none;text-transform:uppercase;
 }
-
 .input-notes{
-  border:none;min-width:120px;width:100%;
-  padding:4px 5px;font-size:12px;
-  background:transparent;outline:none;font-family:inherit;
+  border:none;min-width:120px;width:100%;padding:4px 5px;
+  font-size:12px;background:transparent;outline:none;font-family:inherit;
 }
-
 input:focus{background:#fffde7 !important}
 
 /* Agency required highlight */
 .agency-error{background:#ffe0e0 !important;outline:1.5px solid #cc0000 !important;border-radius:2px}
 th .req{color:#ffd54f;margin-left:2px;font-size:13px}
 
-/* ── Totals section ── */
-.totals-section{
-  background:#f0f4f8;border-radius:7px;
-  padding:14px 16px;margin-bottom:16px;
-}
+/* ── Totals ── */
+.totals-section{background:#f0f4f8;border-radius:7px;padding:14px 16px;margin-bottom:16px}
 .totals-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px}
 .total-item{
   background:#fff;border:1px solid #ccd6e0;border-radius:5px;
@@ -105,17 +82,10 @@ th .req{color:#ffd54f;margin-left:2px;font-size:13px}
 .t-main .total-label,.t-main .total-val{color:#fff}
 .t-mv .total-label,.t-mv .total-val{color:#7a5c00}
 .t-mv-note{font-size:9px;display:block;color:#a07000;margin-top:1px}
-
 .agency-breakdown{margin-top:12px;border-top:1px solid #d0d8e0;padding-top:10px}
-.agency-breakdown h3{
-  font-size:11px;text-transform:uppercase;
-  letter-spacing:.5px;color:#002855;margin-bottom:8px;font-weight:700
-}
+.agency-breakdown h3{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#002855;margin-bottom:8px;font-weight:700}
 .agency-blocks{display:flex;flex-wrap:wrap;gap:8px}
-.agency-block{
-  background:#fff;border:1px solid #ccd6e0;
-  border-radius:5px;padding:8px 13px;
-}
+.agency-block{background:#fff;border:1px solid #ccd6e0;border-radius:5px;padding:8px 13px}
 .agency-name{font-weight:700;font-size:12px;color:#002855;margin-bottom:4px}
 .agency-counts{display:flex;flex-wrap:wrap;gap:7px;font-size:12px;color:#444}
 .agency-total{font-weight:700;color:#002855}
@@ -123,36 +93,33 @@ th .req{color:#ffd54f;margin-left:2px;font-size:13px}
 
 /* ── Legend ── */
 .legend{
-  background:#fffde7;border:1px solid #ffe082;
-  border-radius:5px;padding:10px 14px;
-  font-size:12px;line-height:2.2;margin-bottom:14px;color:#555;
+  background:#fffde7;border:1px solid #ffe082;border-radius:5px;
+  padding:10px 14px;font-size:12px;line-height:2.2;margin-bottom:14px;color:#555;
 }
 .legend span{margin-right:16px;white-space:nowrap}
 .legend .lnote{color:#a07000;font-style:italic}
 
 /* ── Reminder ── */
 .reminder{
-  font-size:12px;color:#555;
-  border-left:3px solid #002855;
+  font-size:12px;color:#555;border-left:3px solid #002855;
   padding:8px 14px;margin-bottom:20px;line-height:1.7;
 }
 
 /* ── Buttons ── */
-.btn-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.btn-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding-top:4px}
 .btn-submit{
-  background:#002855;color:#fff;border:none;
-  padding:11px 30px;font-size:15px;font-weight:700;
-  border-radius:5px;cursor:pointer;letter-spacing:.3px;
-  font-family:inherit;
+  background:#002855;color:#fff;border:none;padding:11px 30px;
+  font-size:15px;font-weight:700;border-radius:5px;cursor:pointer;
+  letter-spacing:.3px;font-family:inherit;
 }
 .btn-submit:hover:not(:disabled){background:#00336e}
 .btn-submit:disabled{background:#999;cursor:not-allowed}
 .btn-clear{
-  background:transparent;border:1.5px solid #bbb;
-  color:#666;padding:10px 18px;font-size:13px;
-  border-radius:5px;cursor:pointer;font-family:inherit;
+  background:transparent;border:1.5px solid #bbb;color:#555;
+  padding:10px 18px;font-size:13px;border-radius:5px;
+  cursor:pointer;font-family:inherit;
 }
-.btn-clear:hover{background:#f0f0f0}
+.btn-clear:hover{background:#f0f0f0;border-color:#999}
 
 @media(max-width:640px){
   .info-grid{grid-template-columns:1fr}
@@ -161,6 +128,11 @@ th .req{color:#ffd54f;margin-left:2px;font-size:13px}
 </style>
 </head>
 <body>
+
+<!-- Datalists for autocomplete -->
+<datalist id="patientList"></datalist>
+<datalist id="agencyList"></datalist>
+
 <div class="page">
 
   <!-- Header -->
@@ -242,66 +214,90 @@ th .req{color:#ffd54f;margin-left:2px;font-size:13px}
   <!-- Buttons -->
   <div class="btn-row">
     <button class="btn-submit" id="submitBtn" onclick="submitInvoice()">Submit Invoice</button>
-    <button class="btn-clear" onclick="clearSaved()">Clear saved patient names</button>
+    <button class="btn-clear" onclick="clearSavedPatients()">Clear saved patient names</button>
   </div>
 
-</div>
+</div><!-- .page -->
 
 <script>
 // ── Constants ────────────────────────────────────────────────────────────────
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby0Z8bNs6rs9YkqgVZSbyKjJnBDm8sChAUidBMzdTeNKarPPbEhWj6Zr_XF2fSlslEL/exec';
-const NUM_ROWS = 20;
-const DAYS = ['SUN','M','T','W','Th','F','SAT'];
-
-// PAYABLE_CODES: counted in total visits.  MV deliberately excluded.
-// NV (Non-Visit Oasis Discharge) IS counted — therapists get paid a reduced rate.
-const PAYABLE_CODES = ['TX','E','RA','DC','NV','SOC','ROC','RC'];
+const NUM_ROWS      = 20;
+const DAYS          = ['SUN','M','T','W','Th','F','SAT'];
+const PAYABLE_CODES = ['TX','E','RA','DC','NV','SOC','ROC','RC']; // MV excluded
 const ALL_KNOWN     = [...PAYABLE_CODES, 'MV'];
 
-const DRAFT_KEY = 'raiDraft_v3';
-const INFO_KEY  = 'raiTherapistInfo';
+// Storage keys
+const DRAFT_KEY   = 'raiDraft_v3';
+const INFO_KEY    = 'raiTherapistInfo';
+const HISTORY_KEY = 'raiPatientHistory'; // { "john doe": { name, agency } }
 
 // ── Init ─────────────────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
   buildTable();
   setDefaultWeek();
   loadDraft();
+  refreshSuggestions();
   ['firstName','lastName','email','weekEnding'].forEach(id =>
     document.getElementById(id).addEventListener('input', saveDraft)
   );
 });
 
-// ── Build table ───────────────────────────────────────────────────────────────
+// ── Build table rows ──────────────────────────────────────────────────────────
 function buildTable() {
   const tbody = document.getElementById('tableBody');
   for (let i = 0; i < NUM_ROWS; i++) {
     const tr = document.createElement('tr');
 
-    // Patient Name cell
+    // Patient Name — autocomplete from history
     const tdP = document.createElement('td');
-    const inP = mkInp('input-patient','patient',i);
-    inP.addEventListener('input', () => { autoResize(inP,150); checkAgency(i); updateTotals(); saveDraft(); });
+    const inP = mkInp('input-patient', 'patient', i);
+    inP.setAttribute('list', 'patientList');
+    inP.addEventListener('input', () => {
+      autoResize(inP, 150);
+      checkAgency(i);
+      updateTotals();
+      saveDraft();
+      updateHistory(i);
+    });
+    // When a datalist suggestion is selected, auto-fill the agency
+    inP.addEventListener('change', () => {
+      autoResize(inP, 150);
+      autoFillAgency(i);
+    });
     tdP.appendChild(inP); tr.appendChild(tdP);
 
-    // Agency cell  (* = required when patient is filled)
+    // Agency — autocomplete from history
     const tdA = document.createElement('td');
-    const inA = mkInp('input-agency','agency',i);
-    inA.addEventListener('input', () => { autoResize(inA,100); checkAgency(i); updateTotals(); saveDraft(); });
+    const inA = mkInp('input-agency', 'agency', i);
+    inA.setAttribute('list', 'agencyList');
+    inA.addEventListener('input', () => {
+      autoResize(inA, 100);
+      checkAgency(i);
+      updateTotals();
+      saveDraft();
+      updateHistory(i);
+    });
+    inA.addEventListener('change', () => autoResize(inA, 100));
     tdA.appendChild(inA); tr.appendChild(tdA);
 
-    // Day cells
+    // Day columns
     DAYS.forEach(d => {
       const tdD = document.createElement('td');
       tdD.className = 'col-day';
       const inD = mkInp('input-day', d, i);
       inD.maxLength = 10;
-      inD.addEventListener('input', () => { inD.value = inD.value.toUpperCase(); updateTotals(); saveDraft(); });
+      inD.addEventListener('input', () => {
+        inD.value = inD.value.toUpperCase();
+        updateTotals();
+        saveDraft();
+      });
       tdD.appendChild(inD); tr.appendChild(tdD);
     });
 
-    // Notes cell
+    // Notes
     const tdN = document.createElement('td');
-    const inN = mkInp('input-notes','notes',i);
+    const inN = mkInp('input-notes', 'notes', i);
     inN.addEventListener('input', saveDraft);
     tdN.appendChild(inN); tr.appendChild(tdN);
 
@@ -314,26 +310,41 @@ function mkInp(cls, field, row) {
   inp.type = 'text';
   inp.className = cls;
   inp.dataset.f = field;
-  inp.dataset.r = row;
+  inp.dataset.r = String(row);
   inp.autocomplete = 'off';
   return inp;
 }
 
-// ── Auto-resize text input to fit its content ─────────────────────────────────
-// Collapses to 1px first so scrollWidth reflects actual content, then expands.
+// ── Auto-resize input to fit its typed content ────────────────────────────────
 function autoResize(inp, minW) {
   inp.style.width = '1px';
   inp.style.width = Math.max(inp.scrollWidth + 4, minW) + 'px';
 }
 
-// ── Mark agency cell red when patient is filled but agency is empty ───────────
+// ── Agency validation highlight ───────────────────────────────────────────────
 function checkAgency(row) {
   const aInp = q('agency', row);
   if (!aInp) return;
   aInp.classList.toggle('agency-error', !!g('patient', row) && !g('agency', row));
 }
 
-// ── Default week ending to most recent Saturday ───────────────────────────────
+// ── Auto-fill agency when patient name matches history ────────────────────────
+function autoFillAgency(row) {
+  const name = g('patient', row).toLowerCase();
+  if (!name) return;
+  const history = loadHistory();
+  const match = history[name];
+  if (match && match.agency) {
+    const aInp = q('agency', row);
+    if (aInp && !aInp.value.trim()) {
+      aInp.value = match.agency;
+      autoResize(aInp, 100);
+      checkAgency(row);
+    }
+  }
+}
+
+// ── Default week ending to most-recent Saturday ───────────────────────────────
 function setDefaultWeek() {
   const today = new Date();
   const day = today.getDay(); // 0=Sun … 6=Sat
@@ -355,24 +366,67 @@ function parseCodes(str) {
   return str.toUpperCase().split(/[\s,/|+]+/).filter(Boolean);
 }
 function esc(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// ── Calculate and render totals ───────────────────────────────────────────────
+// ── Patient / Agency history (persists across weeks) ──────────────────────────
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '{}'); } catch(e) { return {}; }
+}
+
+function updateHistory(row) {
+  const name   = g('patient', row);
+  const agency = g('agency',  row);
+  if (!name) return;
+  const history = loadHistory();
+  const key = name.toLowerCase();
+  history[key] = { name, agency: agency || (history[key]?.agency || '') };
+  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); } catch(e) {}
+  refreshSuggestions();
+}
+
+function addSubmittedPatientsToHistory(patients) {
+  const history = loadHistory();
+  patients.forEach(p => {
+    if (!p.patient) return;
+    const key = p.patient.toLowerCase();
+    history[key] = { name: p.patient, agency: p.agency || (history[key]?.agency || '') };
+  });
+  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); } catch(e) {}
+  refreshSuggestions();
+}
+
+// Update the <datalist> elements from stored history
+function refreshSuggestions() {
+  const history = loadHistory();
+  const entries = Object.values(history);
+
+  const patientList = document.getElementById('patientList');
+  patientList.innerHTML = entries
+    .map(h => `<option value="${esc(h.name)}">`)
+    .join('');
+
+  const agencyList = document.getElementById('agencyList');
+  const agencies = [...new Set(entries.map(h => h.agency).filter(Boolean))];
+  agencyList.innerHTML = agencies
+    .map(a => `<option value="${esc(a)}">`)
+    .join('');
+}
+
+// ── Totals calculation & rendering ───────────────────────────────────────────
 function updateTotals() {
   const counts = {};
   let totalVisits = 0;
-  const agencies = {}; // key → { label, counts, total }
+  const agencies = {};
 
   for (let i = 0; i < NUM_ROWS; i++) {
     const patient = g('patient', i);
-    const agency  = g('agency', i);
+    const agency  = g('agency',  i);
 
     DAYS.forEach(d => {
       parseCodes(g(d, i)).forEach(code => {
         counts[code] = (counts[code] || 0) + 1;
-        // MV is NOT counted in total visits
-        if (PAYABLE_CODES.includes(code)) totalVisits++;
+        if (PAYABLE_CODES.includes(code)) totalVisits++;    // MV NOT counted
 
         if (patient) {
           const key = agency.toUpperCase() || '__NONE__';
@@ -390,20 +444,18 @@ function updateTotals() {
 function renderTotals(counts, totalVisits, agencies) {
   const order = ['TX','E','RA','DC','NV','SOC','ROC','RC','MV'];
 
-  // Overall visit type grid
   let html = '<div class="totals-grid">';
   html += `<div class="total-item t-main"><span class="total-label">TOTAL VISITS</span><span class="total-val">${totalVisits}</span></div>`;
   order.forEach(c => {
     const n = counts[c] || 0;
     if (!n) return;
     const mv = c === 'MV';
-    html += `<div class="total-item${mv ? ' t-mv' : ''}">
+    html += `<div class="total-item${mv?' t-mv':''}">
       <span class="total-label">${c}</span>
       <span class="total-val">${n}</span>
       ${mv ? '<span class="t-mv-note">not counted</span>' : ''}
     </div>`;
   });
-  // Unknown / unlisted codes
   const knownSet = new Set(ALL_KNOWN);
   const others = Object.entries(counts).filter(([k]) => !knownSet.has(k));
   if (others.length) {
@@ -412,7 +464,6 @@ function renderTotals(counts, totalVisits, agencies) {
   }
   html += '</div>';
 
-  // Per-agency breakdown
   const agList = Object.values(agencies);
   if (agList.length) {
     html += '<div class="agency-breakdown"><h3>By Agency</h3><div class="agency-blocks">';
@@ -431,7 +482,7 @@ function renderTotals(counts, totalVisits, agencies) {
   document.getElementById('totalsSection').innerHTML = html;
 }
 
-// ── Draft persistence (localStorage) ─────────────────────────────────────────
+// ── Draft save / load ─────────────────────────────────────────────────────────
 function saveDraft() {
   const draft = {
     firstName:  document.getElementById('firstName').value,
@@ -442,7 +493,7 @@ function saveDraft() {
   };
   for (let i = 0; i < NUM_ROWS; i++) {
     const row = { p: g('patient',i), a: g('agency',i), n: g('notes',i) };
-    DAYS.forEach(d => { row[d] = g(d,i); });
+    DAYS.forEach(d => { row[d] = g(d, i); });
     draft.rows.push(row);
   }
   try {
@@ -457,36 +508,36 @@ function saveDraft() {
 
 function loadDraft() {
   try {
-    // Therapist name/email persists independently across weeks
     const info = JSON.parse(localStorage.getItem(INFO_KEY) || 'null');
     if (info) {
       document.getElementById('firstName').value = info.firstName || '';
       document.getElementById('lastName').value  = info.lastName  || '';
       document.getElementById('email').value     = info.email     || '';
     }
-    // Full week draft
+  } catch(e) {}
+
+  try {
     const draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
     if (!draft) return;
     if (draft.weekEnding) document.getElementById('weekEnding').value = draft.weekEnding;
-
     (draft.rows || []).forEach((row, i) => {
       if (i >= NUM_ROWS) return;
-      const pI = q('patient',i); if (pI) { pI.value = row.p||''; autoResize(pI,150); }
-      const aI = q('agency', i); if (aI) { aI.value = row.a||''; autoResize(aI,100); }
-      const nI = q('notes',  i); if (nI) nI.value = row.n||'';
-      DAYS.forEach(d => { const dI = q(d,i); if(dI) dI.value = row[d]||''; });
+      const pI = q('patient', i); if (pI) { pI.value = row.p||''; autoResize(pI, 150); }
+      const aI = q('agency',  i); if (aI) { aI.value = row.a||''; autoResize(aI, 100); }
+      const nI = q('notes',   i); if (nI) nI.value = row.n||'';
+      DAYS.forEach(d => { const dI = q(d, i); if (dI) dI.value = row[d]||''; });
     });
     updateTotals();
   } catch(e) {}
 }
 
-// ── Clear saved patient data ──────────────────────────────────────────────────
-function clearSaved() {
-  if (!confirm('Clear all saved patient data from this form?')) return;
+// ── Clear saved patient data (NOT therapist name/email or history) ────────────
+function clearSavedPatients() {
+  if (!confirm('Clear all patient rows from this form?\n\n(Your name, email, and patient history for autocomplete are kept.)')) return;
   try { localStorage.removeItem(DRAFT_KEY); } catch(e) {}
   for (let i = 0; i < NUM_ROWS; i++) {
     ['patient','agency','notes',...DAYS].forEach(f => {
-      const inp = q(f,i);
+      const inp = q(f, i);
       if (!inp) return;
       inp.value = '';
       inp.classList.remove('agency-error');
@@ -504,48 +555,36 @@ async function submitInvoice() {
   const email      = document.getElementById('email').value.trim();
   const weekEnding = document.getElementById('weekEnding').value;
 
-  // ── Header field validation
-  if (!firstName || !lastName) {
-    alert('Please enter your first and last name.'); return;
-  }
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    alert('Please enter a valid email address.'); return;
-  }
-  if (!weekEnding) {
-    alert('Please select the week-ending Saturday date.'); return;
-  }
+  if (!firstName || !lastName) { alert('Please enter your first and last name.'); return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('Please enter a valid email address.'); return; }
+  if (!weekEnding) { alert('Please select the week-ending Saturday date.'); return; }
 
-  // ── Agency required for every filled patient row
+  // Agency required for every filled patient row
   const missingAgency = [];
   for (let i = 0; i < NUM_ROWS; i++) {
-    if (g('patient',i) && !g('agency',i)) {
+    if (g('patient', i) && !g('agency', i)) {
       missingAgency.push(i + 1);
-      q('agency',i)?.classList.add('agency-error');
+      q('agency', i)?.classList.add('agency-error');
     }
   }
   if (missingAgency.length) {
-    alert(
-      'Agency name is required for every patient.\n' +
-      'Missing on row' + (missingAgency.length > 1 ? 's' : '') +
-      ': ' + missingAgency.join(', ')
-    );
+    alert('Agency name is required for every patient.\nMissing on row' +
+      (missingAgency.length > 1 ? 's' : '') + ': ' + missingAgency.join(', '));
     return;
   }
 
-  // ── Must have at least one patient
+  // Collect patients
   const patients = [];
   for (let i = 0; i < NUM_ROWS; i++) {
-    const p = g('patient',i);
+    const p = g('patient', i);
     if (!p) continue;
     const row = { patient: p, agency: g('agency',i), notes: g('notes',i) };
-    DAYS.forEach(d => { row[d] = g(d,i); });
+    DAYS.forEach(d => { row[d] = g(d, i); });
     patients.push(row);
   }
-  if (!patients.length) {
-    alert('Please enter at least one patient before submitting.'); return;
-  }
+  if (!patients.length) { alert('Please enter at least one patient before submitting.'); return; }
 
-  // ── Tally codes for submission
+  // Tally codes
   const counts = {};
   let totalVisits = 0;
   for (let i = 0; i < NUM_ROWS; i++) {
@@ -555,59 +594,62 @@ async function submitInvoice() {
     }));
   }
   const knownSet = new Set(ALL_KNOWN);
-  const otherCodes = Object.entries(counts)
-    .filter(([k]) => !knownSet.has(k))
-    .map(([k,v]) => `${k}:${v}`)
-    .join(', ');
+  const otherCodes = Object.entries(counts).filter(([k]) => !knownSet.has(k))
+    .map(([k,v]) => `${k}:${v}`).join(', ');
 
-  const payload = {
+  // Build payload — sent as URL-encoded form data so Apps Script reads e.parameter
+  const payload = new URLSearchParams({
     firstName, lastName, email, weekEnding,
     totalVisits,
     tx:   counts.TX  || 0,
-    mv:   counts.MV  || 0,   // tracked but not in total
+    mv:   counts.MV  || 0,
     eval: counts.E   || 0,
     ra:   counts.RA  || 0,
     dc:   counts.DC  || 0,
-    nv:   counts.NV  || 0,   // Non-Visit Oasis Discharge — payable at reduced rate
+    nv:   counts.NV  || 0,
     soc:  counts.SOC || 0,
     roc:  counts.ROC || 0,
     rc:   counts.RC  || 0,
     otherCodes,
     patientCount: patients.length,
     patients: JSON.stringify(patients)
-  };
+  });
 
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.textContent = 'Submitting…';
 
   try {
-    const res  = await fetch(APPS_SCRIPT_URL, { method:'POST', body: JSON.stringify(payload) });
-    const data = await res.json();
+    // mode:'no-cors' avoids CORS preflight for cross-origin Apps Script requests.
+    // The response is opaque so we cannot read it — we optimistically show success.
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode:   'no-cors',
+      body:   payload
+    });
 
-    if (data.status === 'success' || data.result === 'success') {
-      alert('✓ Invoice submitted successfully!\nA confirmation email will arrive shortly.');
-      try { localStorage.removeItem(DRAFT_KEY); } catch(e) {}
-      // Clear patient rows; keep therapist name / email
-      for (let i = 0; i < NUM_ROWS; i++) {
-        ['patient','agency','notes',...DAYS].forEach(f => {
-          const inp = q(f,i); if (!inp) return;
-          inp.value = '';
-          inp.classList.remove('agency-error');
-          if (f === 'patient') autoResize(inp,150);
-          if (f === 'agency')  autoResize(inp,100);
-        });
-      }
-      updateTotals();
-      setDefaultWeek();
-    } else {
-      alert('Submission error: ' + (data.message || 'Unknown error. Please try again or email kari@rehabaction.com'));
+    // Save patients to persistent history (for autocomplete next week)
+    addSubmittedPatientsToHistory(patients);
+
+    alert('✓ Invoice submitted!\nYou should receive a confirmation email shortly.\nIf no email arrives within a few minutes, contact kari@rehabaction.com');
+
+    // Clear draft but keep therapist name/email
+    try { localStorage.removeItem(DRAFT_KEY); } catch(e) {}
+    for (let i = 0; i < NUM_ROWS; i++) {
+      ['patient','agency','notes',...DAYS].forEach(f => {
+        const inp = q(f, i); if (!inp) return;
+        inp.value = '';
+        inp.classList.remove('agency-error');
+        if (f === 'patient') autoResize(inp, 150);
+        if (f === 'agency')  autoResize(inp, 100);
+      });
     }
+    updateTotals();
+    setDefaultWeek();
+
   } catch(e) {
-    alert(
-      'Network error — please check your connection and try again.\n' +
-      'If this keeps happening, email kari@rehabaction.com\n\n' + e.message
-    );
+    alert('Network error — please check your connection and try again.\n' +
+      'If this keeps happening, email kari@rehabaction.com\n\n' + e.message);
   } finally {
     btn.disabled = false;
     btn.textContent = 'Submit Invoice';

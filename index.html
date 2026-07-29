@@ -31,6 +31,7 @@ body{
   padding:6px 10px;font-size:13px;font-family:inherit;
 }
 .info-row input:focus{outline:none;border-color:#002855;box-shadow:0 0 0 2px rgba(0,40,85,.12)}
+.info-row input.date-error{background:#ffe0e0 !important;outline:1.5px solid #cc0000 !important;border-radius:2px}
 
 /* ── Table ── */
 .table-scroll{overflow-x:auto;margin-bottom:14px}
@@ -228,10 +229,42 @@ window.addEventListener('DOMContentLoaded', () => {
   setDefaultWeek();
   loadDraft();
   refreshSuggestions();
-  ['firstName','lastName','email','weekEnding'].forEach(id =>
+  ['firstName','lastName','email'].forEach(id =>
     document.getElementById(id).addEventListener('input', saveDraft)
   );
+  const weekEl = document.getElementById('weekEnding');
+  weekEl.addEventListener('input', () => { saveDraft(); validateWeekEndingField(); });
 });
+
+// ── Date helpers ────────────────────────────────────────────────────────────
+// Format a Date using its LOCAL calendar fields (never toISOString(), which
+// converts through UTC first and can roll the date forward/back a day
+// depending on the user's timezone and time of day).
+function toLocalISODate(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+// Parse a 'YYYY-MM-DD' string as a LOCAL date (never `new Date(str)`, which
+// treats a bare date string as UTC midnight and can shift the day locally).
+function parseLocalISODate(str) {
+  const [y, m, d] = str.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+function isSaturday(dateStr) {
+  if (!dateStr) return false;
+  return parseLocalISODate(dateStr).getDay() === 6; // 0=Sun … 6=Sat
+}
+
+function validateWeekEndingField() {
+  const el = document.getElementById('weekEnding');
+  const ok = !el.value || isSaturday(el.value);
+  el.classList.toggle('date-error', !ok);
+  return ok;
+}
 
 // ── Build table ───────────────────────────────────────────────────────────────
 function buildTable() {
@@ -308,13 +341,16 @@ function autoFillAgency(row) {
   }
 }
 
+// Default the "Week ending" field to the most recently completed Saturday,
+// using LOCAL calendar math throughout (no toISOString() UTC conversion).
 function setDefaultWeek() {
   const today = new Date();
-  const day = today.getDay();
-  const daysBack = day === 6 ? 0 : day + 1;
-  const sat = new Date(today);
-  sat.setDate(today.getDate() - daysBack);
-  document.getElementById('weekEnding').value = sat.toISOString().split('T')[0];
+  const day = today.getDay();               // 0=Sun … 6=Sat, in LOCAL time
+  const daysBack = day === 6 ? 0 : day + 1;  // days back to the prior Saturday
+  const sat = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  sat.setDate(sat.getDate() - daysBack);
+  document.getElementById('weekEnding').value = toLocalISODate(sat);
+  validateWeekEndingField();
 }
 
 function q(field, row) { return document.querySelector(`input[data-f="${field}"][data-r="${row}"]`); }
@@ -437,7 +473,10 @@ function loadDraft() {
   try {
     const draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
     if (!draft) return;
-    if (draft.weekEnding) document.getElementById('weekEnding').value = draft.weekEnding;
+    if (draft.weekEnding) {
+      document.getElementById('weekEnding').value = draft.weekEnding;
+      validateWeekEndingField();
+    }
     (draft.rows || []).forEach((row, i) => {
       if (i >= NUM_ROWS) return;
       const pI=q('patient',i); if(pI){pI.value=row.p||'';autoResize(pI,150);}
@@ -474,6 +513,14 @@ async function submitInvoice() {
   if (!firstName || !lastName) { alert('Please enter your first and last name.'); return; }
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { alert('Please enter a valid email address.'); return; }
   if (!weekEnding) { alert('Please select the week-ending Saturday date.'); return; }
+
+  // Guard against a non-Saturday date — whether from a stale/incorrect
+  // auto-fill or a manual pick — before anything is sent.
+  if (!isSaturday(weekEnding)) {
+    document.getElementById('weekEnding').classList.add('date-error');
+    alert('The "Week ending" date must be a Saturday. Please correct it before submitting.');
+    return;
+  }
 
   // Agency required
   const missingAgency = [];

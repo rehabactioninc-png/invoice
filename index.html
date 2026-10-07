@@ -205,7 +205,7 @@ th .req{color:#ffd54f;margin-left:2px;font-size:13px}
 
   <div class="btn-row">
     <button class="btn-submit" id="submitBtn" onclick="submitInvoice()">Submit Invoice</button>
-    <button class="btn-clear" onclick="clearSavedPatients()">Clear saved patient names</button>
+    <button class="btn-clear" onclick="clearSavedPatients()">Clear all patient names</button>
   </div>
 
 </div>
@@ -490,8 +490,9 @@ function loadDraft() {
 
 // ── Clear patient rows ────────────────────────────────────────────────────────
 function clearSavedPatients() {
-  if (!confirm('Clear all patient rows?\n\n(Your name, email, and autocomplete history are kept.)')) return;
+  if (!confirm('Clear ALL patient names?\n\nThis empties the form and erases every saved name suggestion. Your name and email are kept.')) return;
   try { localStorage.removeItem(DRAFT_KEY); } catch(e) {}
+  try { localStorage.removeItem(HISTORY_KEY); } catch(e) {}
   for (let i = 0; i < NUM_ROWS; i++) {
     ['patient','agency','notes',...DAYS].forEach(f => {
       const inp = q(f,i); if (!inp) return;
@@ -500,6 +501,7 @@ function clearSavedPatients() {
       if (f==='agency')  autoResize(inp,100);
     });
   }
+  refreshSuggestions();   // empties the autocomplete dropdowns right away
   updateTotals();
 }
 
